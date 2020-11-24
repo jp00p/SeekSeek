@@ -1,0 +1,256 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://LobbySetup.gd" type="Script" id=1]
+[ext_resource path="res://Characters/character_button_group.tres" type="ButtonGroup" id=2]
+[ext_resource path="res://sprites/char/pokey/pokey_front_1.png" type="Texture" id=3]
+[ext_resource path="res://sprites/char/pizzagirl/pizzagirl_front_1.png" type="Texture" id=4]
+[ext_resource path="res://sprites/char/mrsaturn/mrsaturn_front_1.png" type="Texture" id=5]
+[ext_resource path="res://sprites/char/frank/frank_front_1.png" type="Texture" id=6]
+[ext_resource path="res://Fonts/apple_kid.ttf" type="DynamicFontData" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+use_mipmaps = true
+extra_spacing_top = 1
+extra_spacing_bottom = -1
+font_data = ExtResource( 7 )
+
+[sub_resource type="Theme" id=2]
+default_font = SubResource( 1 )
+
+[node name="LobbySetup" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 2 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 15
+custom_constants/margin_top = 100
+custom_constants/margin_left = 15
+custom_constants/margin_bottom = 15
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LobbyContainer" type="VBoxContainer" parent="Margin"]
+margin_left = 15.0
+margin_top = 100.0
+margin_right = 625.0
+margin_bottom = 497.0
+custom_constants/separation = 15
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Chars" type="GridContainer" parent="Margin/LobbyContainer"]
+margin_right = 610.0
+margin_bottom = 56.0
+custom_constants/vseparation = 10
+custom_constants/hseparation = 10
+columns = 5
+
+[node name="Pokey" type="CheckBox" parent="Margin/LobbyContainer/Chars" groups=[
+"char",
+]]
+margin_right = 90.0
+margin_bottom = 56.0
+pressed = true
+group = ExtResource( 2 )
+text = "Pokey"
+icon = ExtResource( 3 )
+
+[node name="Pizzagirl" type="CheckBox" parent="Margin/LobbyContainer/Chars" groups=[
+"char",
+]]
+margin_left = 100.0
+margin_right = 204.0
+margin_bottom = 56.0
+group = ExtResource( 2 )
+text = "Pizza Girl"
+icon = ExtResource( 4 )
+
+[node name="MrSaturn" type="CheckBox" parent="Margin/LobbyContainer/Chars" groups=[
+"char",
+]]
+margin_left = 214.0
+margin_right = 324.0
+margin_bottom = 56.0
+group = ExtResource( 2 )
+text = "Mr. Saturn"
+icon = ExtResource( 5 )
+
+[node name="Frank" type="CheckBox" parent="Margin/LobbyContainer/Chars" groups=[
+"char",
+]]
+margin_left = 334.0
+margin_right = 423.0
+margin_bottom = 56.0
+group = ExtResource( 2 )
+text = "Frank"
+icon = ExtResource( 6 )
+
+[node name="Name" type="HBoxContainer" parent="Margin/LobbyContainer"]
+margin_top = 71.0
+margin_right = 610.0
+margin_bottom = 94.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Margin/LobbyContainer/Name"]
+margin_top = 5.0
+margin_right = 70.0
+margin_bottom = 18.0
+text = "Enter your name"
+
+[node name="NameEdit" type="LineEdit" parent="Margin/LobbyContainer/Name"]
+margin_left = 74.0
+margin_right = 194.0
+margin_bottom = 23.0
+rect_min_size = Vector2( 120, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TabPanel" type="Panel" parent="Margin/LobbyContainer"]
+margin_top = 109.0
+margin_right = 610.0
+margin_bottom = 259.0
+rect_min_size = Vector2( 0, 150 )
+
+[node name="TabMargin" type="MarginContainer" parent="Margin/LobbyContainer/TabPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TabContainer" type="TabContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin"]
+margin_right = 610.0
+margin_bottom = 150.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Host" type="Control" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 31.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Center" type="CenterContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HostButton" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host/Center"]
+margin_left = 268.0
+margin_top = 48.0
+margin_right = 334.0
+margin_bottom = 67.0
+size_flags_horizontal = 4
+size_flags_vertical = 0
+text = "Host a game"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Join" type="Control" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 31.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="ipwrap" type="VBoxContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="IpBox" type="HBoxContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap"]
+margin_top = 34.0
+margin_right = 602.0
+margin_bottom = 57.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox"]
+margin_left = 188.0
+margin_top = 5.0
+margin_right = 223.0
+margin_bottom = 18.0
+text = "Enter IP:"
+
+[node name="IpAddr" type="LineEdit" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox"]
+margin_left = 227.0
+margin_right = 347.0
+margin_bottom = 23.0
+rect_min_size = Vector2( 120, 0 )
+size_flags_vertical = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="JoinButton" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox"]
+margin_left = 351.0
+margin_top = 2.0
+margin_right = 414.0
+margin_bottom = 21.0
+size_flags_vertical = 4
+text = "Join a game"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap"]
+margin_top = 61.0
+margin_right = 602.0
+margin_bottom = 80.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="localhost" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer"]
+margin_left = 228.0
+margin_right = 279.0
+margin_bottom = 19.0
+text = "localhost"
+
+[node name="jeremy" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer"]
+margin_left = 283.0
+margin_right = 325.0
+margin_bottom = 19.0
+text = "jeremy"
+
+[node name="ashley" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer"]
+margin_left = 329.0
+margin_right = 374.0
+margin_bottom = 19.0
+text = "ashleyu"
+[connection signal="pressed" from="Margin/LobbyContainer/Chars/Pokey" to="." method="_on_Pokey_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/Chars/Pizzagirl" to="." method="_on_Pizzagirl_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/Chars/MrSaturn" to="." method="_on_MrSaturn_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/Chars/Frank" to="." method="_on_Frank_pressed"]
+[connection signal="focus_entered" from="Margin/LobbyContainer/Name/NameEdit" to="." method="_on_NameEdit_focus_entered"]
+[connection signal="text_changed" from="Margin/LobbyContainer/Name/NameEdit" to="." method="_on_NameEdit_text_changed"]
+[connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host/Center/HostButton" to="." method="_on_HostButton_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox/JoinButton" to="." method="_on_JoinButton_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer/localhost" to="." method="_on_localhost_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer/jeremy" to="." method="_on_jeremy_pressed"]
+[connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer/ashley" to="." method="_on_ashley_pressed"]
