@@ -1,31 +1,88 @@
 extends Control
 
 onready var ip_addr = $Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox/IpAddr
+onready var error_text = $Margin/LobbyContainer/ErrorText
+onready var player_list = $Margin/Players/MarginContainer/VBoxContainer/List
+
 var pname = "" # nickname placeholder
 var character = "pokey" # character selection
+
+func _ready():
+	gamestate.connect("connection_failed", self, "_on_connection_failed")
+	gamestate.connect("connection_succeeded", self, "_on_connection_success")
+	gamestate.connect("player_list_changed", self, "refresh_lobby")
+	gamestate.connect("game_ended", self, "_on_game_ended")
+	gamestate.connect("game_error", self, "_on_game_error")
+
+func _set_buttons_disabled(d):
+	$Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host/Center/HostButton.disabled = d
+	$Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox/JoinButton.disabled = d
 
 # hosting a game
 func _on_HostButton_pressed():
 	if pname == "":
+		error_text.text = "Please enter a name."
 		return
-	ConnectionManager.create_server(pname, character)
-	_start_game()
+	$Margin/LobbyContainer.hide()
+	$Margin/Players.show()
+	error_text.text = ""
+	gamestate.host_game(pname, character)
+	refresh_lobby()
 
 # joining a game
 func _on_JoinButton_pressed():
 	var ip = ip_addr.text
-	if pname == "" or ip == "":
+	if not ip.is_valid_ip_address():
+		error_text.text = "Invalid IP address."
 		return
-	ConnectionManager.connect_to_server(ip, pname, character)
-	_start_game()
+	if pname == "":
+		error_text.text = "Please enter a name."
+		return
+	
+	error_text.text = ""
+	_set_buttons_disabled(true)
+	gamestate.join_game(ip, pname, character)
+	
 
 # update name
 func _on_NameEdit_text_changed(new_text):
 	pname = new_text
 
-# start the game (go to level 1... could go to a lobby instead)
+func _on_connection_success():
+	$Margin/LobbyContainer.hide()
+	$Margin/Players.show()
+	
+func _on_connection_failed():
+	_set_buttons_disabled(false)
+	error_text.text = "Connection failed."
+
+func _on_game_ended():
+	show()
+	$Margin/LobbyContainer.show()
+	$Margin/Players.hide()
+	
+func _on_game_error(msg):
+	$ErrorDialog.dialog_text = msg
+	$ErrorDialog.popup_centered_minsize()
+	_set_buttons_disabled(false)
+
+func refresh_lobby():
+	var players = gamestate.get_player_list()
+	print(players)
+	players.sort()
+	player_list.clear()
+	player_list.add_item(gamestate.get_player_name() + " (You)")
+	for p in players:
+		player_list.add_item(p.name)
+	$Margin/Players/MarginContainer/VBoxContainer/Start.disabled = not get_tree().is_network_server()	
+
 func _start_game():
-	get_tree().change_scene("res://Level1.tscn")
+	gamestate.begin_game()
+
+
+
+
+
 
 # character selection -- there must be a better way (build buttons with code, connect programmatically)
 func _on_Pokey_pressed():

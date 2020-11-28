@@ -45,13 +45,15 @@ margin_top = 100.0
 margin_right = 625.0
 margin_bottom = 497.0
 custom_constants/separation = 15
+alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Chars" type="GridContainer" parent="Margin/LobbyContainer"]
+margin_top = 49.0
 margin_right = 610.0
-margin_bottom = 56.0
+margin_bottom = 105.0
 custom_constants/vseparation = 10
 custom_constants/hseparation = 10
 columns = 5
@@ -97,9 +99,9 @@ text = "Frank"
 icon = ExtResource( 6 )
 
 [node name="Name" type="HBoxContainer" parent="Margin/LobbyContainer"]
-margin_top = 71.0
+margin_top = 120.0
 margin_right = 610.0
-margin_bottom = 94.0
+margin_bottom = 143.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -120,10 +122,11 @@ __meta__ = {
 }
 
 [node name="TabPanel" type="Panel" parent="Margin/LobbyContainer"]
-margin_top = 109.0
+margin_top = 158.0
 margin_right = 610.0
-margin_bottom = 259.0
-rect_min_size = Vector2( 0, 150 )
+margin_bottom = 308.0
+rect_min_size = Vector2( 420, 150 )
+size_flags_horizontal = 5
 
 [node name="TabMargin" type="MarginContainer" parent="Margin/LobbyContainer/TabPanel"]
 anchor_right = 1.0
@@ -140,7 +143,6 @@ __meta__ = {
 }
 
 [node name="Host" type="Control" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -168,6 +170,7 @@ __meta__ = {
 }
 
 [node name="Join" type="Control" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -243,6 +246,71 @@ margin_left = 329.0
 margin_right = 374.0
 margin_bottom = 19.0
 text = "ashleyu"
+
+[node name="ErrorText" type="Label" parent="Margin/LobbyContainer"]
+modulate = Color( 1, 0, 0, 1 )
+margin_top = 323.0
+margin_right = 610.0
+margin_bottom = 348.0
+rect_min_size = Vector2( 0, 25 )
+align = 1
+valign = 1
+
+[node name="Players" type="Panel" parent="Margin"]
+visible = false
+margin_left = 15.0
+margin_top = 100.0
+margin_right = 625.0
+margin_bottom = 497.0
+
+[node name="MarginContainer" type="MarginContainer" parent="Margin/Players"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 15
+custom_constants/margin_top = 15
+custom_constants/margin_left = 15
+custom_constants/margin_bottom = 15
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin/Players/MarginContainer"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 595.0
+margin_bottom = 382.0
+custom_constants/separation = 15
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Margin/Players/MarginContainer/VBoxContainer"]
+margin_right = 580.0
+margin_bottom = 13.0
+text = "Players:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="List" type="ItemList" parent="Margin/Players/MarginContainer/VBoxContainer"]
+margin_top = 28.0
+margin_right = 580.0
+margin_bottom = 148.0
+rect_min_size = Vector2( 0, 120 )
+auto_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Start" type="Button" parent="Margin/Players/MarginContainer/VBoxContainer"]
+margin_top = 163.0
+margin_right = 580.0
+margin_bottom = 182.0
+text = "Start Game"
+
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+margin_right = 72.0
+margin_bottom = 56.0
 [connection signal="pressed" from="Margin/LobbyContainer/Chars/Pokey" to="." method="_on_Pokey_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/Chars/Pizzagirl" to="." method="_on_Pizzagirl_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/Chars/MrSaturn" to="." method="_on_MrSaturn_pressed"]
@@ -254,3 +322,4 @@ text = "ashleyu"
 [connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer/localhost" to="." method="_on_localhost_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer/jeremy" to="." method="_on_jeremy_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer/ashley" to="." method="_on_ashley_pressed"]
+[connection signal="pressed" from="Margin/Players/MarginContainer/VBoxContainer/Start" to="." method="_start_game"]

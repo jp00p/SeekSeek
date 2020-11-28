@@ -5,7 +5,7 @@ const DEFAULT_PORT = 31400
 const MAX_PLAYERS = 5
 
 var players = { }
-var self_data = { name = '', position = Vector2(360, 180) }
+var self_data = { name = '', position = Vector2(200, 100) }
 
 signal player_disconnected
 signal server_disconnected
@@ -16,15 +16,19 @@ func _ready():
 	get_tree().connect('network_peer_connected', self, '_on_player_connected')
 
 func create_server(player_nickname, character):
+	# host a game
+	print("Hosting game...")
 	self_data.name = player_nickname
 	self_data.character = character
 	players[1] = self_data
 	var peer = NetworkedMultiplayerENet.new()
 	peer.create_server(DEFAULT_PORT, MAX_PLAYERS)
 	get_tree().set_network_peer(peer)
-	
+	get_tree().change_scene("res://Lobby.tscn")
 
 func connect_to_server(ip, player_nickname, character):
+	# join a game
+	print("Joining Game...")
 	self_data.name = player_nickname
 	self_data.character = character
 	get_tree().connect('connected_to_server', self, '_connected_to_server')
@@ -34,14 +38,18 @@ func connect_to_server(ip, player_nickname, character):
 	
 
 func _connected_to_server():
+	# joined a game
 	var local_player_id = get_tree().get_network_unique_id()
+	print(str(local_player_id) + " connected.")
 	players[local_player_id] = self_data
 	rpc('_send_player_info', local_player_id, self_data)
 
 func _on_player_disconnected(id):
+	# disconnected
 	players.erase(id)
 
 func _on_player_connected(connected_player_id):
+	print("Connected: " + str(connected_player_id))
 	var local_player_id = get_tree().get_network_unique_id()
 	if not(get_tree().is_network_server()):
 		rpc_id(1, '_request_player_info', local_player_id, connected_player_id)
@@ -62,11 +70,10 @@ remote func _send_player_info(id, info):
 	var new_player = load('res://Player.tscn').instance()
 	new_player.name = str(id)
 	new_player.set_network_master(id)
+	get_tree().change_scene("res://Lobby.tscn")
+	#$'/root/Level1/YSort/Players'.add_child(new_player)
+	#new_player.init(info.name, info.position, info.character)
 	
-	# this is super brittle... also why:
-	$'/root/Level1/YSort'.add_child(new_player)
-	
-	new_player.init(info.name, info.position, info.character)
 
 func update_position(id, position):
 	players[id].position = position
