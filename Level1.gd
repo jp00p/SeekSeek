@@ -1,15 +1,21 @@
 extends Node
 
 # game ideas:
-# find & gather certain number of items
+# find & gather certain number & combination of items
 # bring to certain building (players must find building?)
 # avoid getting tagged by seeker
-# seeker can shoot projectiles that knock out players
 # knocked out players can explore the map to help?
 # time limit? who wins when it runs out? (hiders prob)
 # items and locations are randomized each game
 # seeker is slower but has more stamina, hiders are faster but can only run in bursts
+# seeker power: see through trees/buildings for a bit
+# seeker power: teleport using connected portals
+# seeker power: change to night for hiders for a bit
+# seeker power: shoot PSI to stun hider
+# seeker power: up-close instant knock out
+# turn knocked out players into zombies???  maybe they chase/slow down the seeker
 
+var is_night = false
 
 remotesync var team_coins = 0
 
@@ -26,7 +32,7 @@ func _on_player_coin_gain():
 func _ready():
 	# this cleans up camera smoothing (but why?!)
 	Engine.set_target_fps(Engine.get_iterations_per_second())
-	var ui = preload('res://UI.tscn').instance()
+	var ui = load('res://UI.tscn').instance()
 	add_child(ui)
 	$TileMap.set_visible(false)
 
@@ -39,3 +45,17 @@ func _on_Area2D_body_entered(body):
 func _on_ShopExit_body_entered(body):
 	body.position = $"SpawnPoints/0".global_position
 	pass
+	
+func set_night():
+	rpc("nighttime")
+
+remotesync func nighttime():
+	print("Setting it to night!")
+	is_night = true
+	$AnimationPlayer.play("nighttime")
+	$NightTimer.start()
+
+func _on_NightTimer_timeout():
+	print("Night time is over!")
+	is_night = false
+	$AnimationPlayer.play_backwards("nighttime")

@@ -3,8 +3,38 @@ extends CanvasLayer
 onready var chat_display = $Chat/ChatText
 var chat_visible = false
 
+func _ready():
+	var hotkey_count = 1
+	
+	for skill in Globals.seeker_skills:
+		var skillbox = load("res://SeekerPower.tscn").instance()
+		skillbox.skill_name = skill.name
+		skillbox.background = skill.background
+		skillbox.icon_image = skill.icon
+		skillbox.hotkey = hotkey_count
+		skillbox.cooldown = skill.cooldown
+		hotkey_count += 1
+		$SeekerPowers.add_child(skillbox)
+	
+	for q in gamestate.item_quest:
+		var lab = Label.new()
+		lab.text = str(q[0]) + " " + str(q[1])
+		$Quests.add_child(lab)
+		
+		
 func _process(delta):
 	pass
+
+func update_quest_text():
+	# remove text
+	for n in $Quests.get_children():
+		n.queue_free()
+	
+	# re-add text
+	for q in gamestate.item_quest:
+		var lab = Label.new()
+		lab.text = str(q[0]) + " " + str(q[1])
+		$Quests.add_child(lab)
 
 func _on_ChatSend_pressed():
 	var msg = $Chat/ChatControl/ChatInput.text

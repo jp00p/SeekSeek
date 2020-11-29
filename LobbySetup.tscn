@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://LobbySetup.gd" type="Script" id=1]
 [ext_resource path="res://Characters/character_button_group.tres" type="ButtonGroup" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://sprites/char/mrsaturn/mrsaturn_front_1.png" type="Texture" id=5]
 [ext_resource path="res://sprites/char/frank/frank_front_1.png" type="Texture" id=6]
 [ext_resource path="res://Fonts/apple_kid.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://LobbyUI/EB_Panel.tres" type="StyleBox" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 outline_size = 1
@@ -18,6 +19,8 @@ font_data = ExtResource( 7 )
 
 [sub_resource type="Theme" id=2]
 default_font = SubResource( 1 )
+
+[sub_resource type="StyleBoxEmpty" id=3]
 
 [node name="LobbySetup" type="Control"]
 anchor_right = 1.0
@@ -40,10 +43,11 @@ __meta__ = {
 }
 
 [node name="LobbyContainer" type="VBoxContainer" parent="Margin"]
-margin_left = 15.0
+margin_left = 300.0
 margin_top = 100.0
-margin_right = 625.0
-margin_bottom = 497.0
+margin_right = 723.0
+margin_bottom = 585.0
+size_flags_horizontal = 4
 custom_constants/separation = 15
 alignment = 1
 __meta__ = {
@@ -51,9 +55,9 @@ __meta__ = {
 }
 
 [node name="Chars" type="GridContainer" parent="Margin/LobbyContainer"]
-margin_top = 49.0
-margin_right = 610.0
-margin_bottom = 105.0
+margin_top = 93.0
+margin_right = 423.0
+margin_bottom = 149.0
 custom_constants/vseparation = 10
 custom_constants/hseparation = 10
 columns = 5
@@ -99,9 +103,9 @@ text = "Frank"
 icon = ExtResource( 6 )
 
 [node name="Name" type="HBoxContainer" parent="Margin/LobbyContainer"]
-margin_top = 120.0
-margin_right = 610.0
-margin_bottom = 143.0
+margin_top = 164.0
+margin_right = 423.0
+margin_bottom = 187.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -117,16 +121,18 @@ margin_left = 74.0
 margin_right = 194.0
 margin_bottom = 23.0
 rect_min_size = Vector2( 120, 0 )
+custom_styles/normal = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TabPanel" type="Panel" parent="Margin/LobbyContainer"]
-margin_top = 158.0
-margin_right = 610.0
-margin_bottom = 308.0
+margin_top = 202.0
+margin_right = 423.0
+margin_bottom = 352.0
 rect_min_size = Vector2( 420, 150 )
 size_flags_horizontal = 5
+custom_styles/panel = ExtResource( 8 )
 
 [node name="TabMargin" type="MarginContainer" parent="Margin/LobbyContainer/TabPanel"]
 anchor_right = 1.0
@@ -136,8 +142,11 @@ __meta__ = {
 }
 
 [node name="TabContainer" type="TabContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin"]
-margin_right = 610.0
+margin_right = 423.0
 margin_bottom = 150.0
+custom_styles/tab_fg = ExtResource( 8 )
+custom_styles/tab_bg = ExtResource( 8 )
+custom_styles/panel = SubResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -145,10 +154,7 @@ __meta__ = {
 [node name="Host" type="Control" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 31.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_top = 23.0
 
 [node name="Center" type="CenterContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host"]
 anchor_right = 1.0
@@ -158,12 +164,13 @@ __meta__ = {
 }
 
 [node name="HostButton" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host/Center"]
-margin_left = 268.0
-margin_top = 48.0
-margin_right = 334.0
-margin_bottom = 67.0
+margin_left = 174.0
+margin_top = 52.0
+margin_right = 248.0
+margin_bottom = 75.0
 size_flags_horizontal = 4
 size_flags_vertical = 0
+custom_styles/normal = ExtResource( 8 )
 text = "Host a game"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -173,10 +180,7 @@ __meta__ = {
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 31.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_top = 23.0
 
 [node name="ipwrap" type="VBoxContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join"]
 anchor_right = 1.0
@@ -187,71 +191,75 @@ __meta__ = {
 }
 
 [node name="IpBox" type="HBoxContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap"]
-margin_top = 34.0
-margin_right = 602.0
-margin_bottom = 57.0
+margin_top = 38.0
+margin_right = 423.0
+margin_bottom = 61.0
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox"]
-margin_left = 188.0
+margin_left = 94.0
 margin_top = 5.0
-margin_right = 223.0
+margin_right = 129.0
 margin_bottom = 18.0
 text = "Enter IP:"
 
 [node name="IpAddr" type="LineEdit" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox"]
-margin_left = 227.0
-margin_right = 347.0
+margin_left = 133.0
+margin_right = 253.0
 margin_bottom = 23.0
 rect_min_size = Vector2( 120, 0 )
 size_flags_vertical = 4
+custom_styles/normal = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="JoinButton" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox"]
-margin_left = 351.0
-margin_top = 2.0
-margin_right = 414.0
-margin_bottom = 21.0
+margin_left = 257.0
+margin_right = 328.0
+margin_bottom = 23.0
 size_flags_vertical = 4
+custom_styles/normal = ExtResource( 8 )
 text = "Join a game"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap"]
-margin_top = 61.0
-margin_right = 602.0
-margin_bottom = 80.0
+margin_top = 65.0
+margin_right = 423.0
+margin_bottom = 88.0
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="localhost" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer"]
-margin_left = 228.0
-margin_right = 279.0
-margin_bottom = 19.0
+margin_left = 126.0
+margin_right = 185.0
+margin_bottom = 23.0
+custom_styles/normal = ExtResource( 8 )
 text = "localhost"
 
 [node name="jeremy" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer"]
-margin_left = 283.0
-margin_right = 325.0
-margin_bottom = 19.0
+margin_left = 189.0
+margin_right = 239.0
+margin_bottom = 23.0
+custom_styles/normal = ExtResource( 8 )
 text = "jeremy"
 
 [node name="ashley" type="Button" parent="Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/HBoxContainer"]
-margin_left = 329.0
-margin_right = 374.0
-margin_bottom = 19.0
+margin_left = 243.0
+margin_right = 296.0
+margin_bottom = 23.0
+custom_styles/normal = ExtResource( 8 )
 text = "ashleyu"
 
 [node name="ErrorText" type="Label" parent="Margin/LobbyContainer"]
 modulate = Color( 1, 0, 0, 1 )
-margin_top = 323.0
-margin_right = 610.0
-margin_bottom = 348.0
+margin_top = 367.0
+margin_right = 423.0
+margin_bottom = 392.0
 rect_min_size = Vector2( 0, 25 )
 align = 1
 valign = 1
@@ -260,8 +268,8 @@ valign = 1
 visible = false
 margin_left = 15.0
 margin_top = 100.0
-margin_right = 625.0
-margin_bottom = 497.0
+margin_right = 1009.0
+margin_bottom = 585.0
 
 [node name="MarginContainer" type="MarginContainer" parent="Margin/Players"]
 anchor_right = 1.0
@@ -277,8 +285,8 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="Margin/Players/MarginContainer"]
 margin_left = 15.0
 margin_top = 15.0
-margin_right = 595.0
-margin_bottom = 382.0
+margin_right = 979.0
+margin_bottom = 470.0
 custom_constants/separation = 15
 __meta__ = {
 "_edit_use_anchors_": false

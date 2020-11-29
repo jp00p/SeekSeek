@@ -16,7 +16,9 @@ extends Node
 const DEFAULT_PORT = 10567 # need to open this on router, or let host choose?
 const MAX_PEERS = 12
 
-const item_count = 12
+var num_items = 3
+var item_types = 3
+sync var item_quest
 
 # these are always the details for YOU
 var player_name = "DEFAWLT"
@@ -70,14 +72,14 @@ func _connected_fail():
 # Lobby management functions.
 remote func register_player(new_player_name, new_player_char):
 	var id = get_tree().get_rpc_sender_id()
-	players[id] = {"name" : new_player_name, "character" : new_player_char }
+	players[id] = {"name" : new_player_name, "character" : new_player_char, "team" : "" }
 	emit_signal("player_list_changed")
 
 func unregister_player(id):
 	players.erase(id)
 	emit_signal("player_list_changed")
 
-remote func pre_start_game(spawn_points):
+remote func pre_start_game(spawn_points, item_spawn_points):
 	# could let the host choose a level... 
 	# but for now most of the game is dependent on being in Level1
 	var world = load("res://Level1.tscn").instance()
@@ -86,19 +88,15 @@ remote func pre_start_game(spawn_points):
 	# we load the level here
 	get_tree().get_root().add_child(world)
 	
+
+		
+		
 	# hide the lobby instead of freeing it
 	# then we can pop back into it on error/exit
 	get_tree().get_root().get_node("LobbySetup").hide()
 
 	# prep the player
 	var player_scene = load("res://Player.tscn")
-	
-	# set up the teams
-	# one seeker, everyone else a hider
-	var team_choices = ["seeker"] # start with one seeker always
-	for _n in range(spawn_points.size()-1): # size-1 because we already have a seeker
-		team_choices.append("hider") # fill the array with hiders based on how many players are spawning
-	team_choices.shuffle() # randomize the team array
 	
 	for p_id in spawn_points:
 		# spawn the players in specific spots! (todo: randomize these spots)
@@ -108,41 +106,45 @@ remote func pre_start_game(spawn_points):
 		player.set_name(str(p_id)) # sets the player node name to their network ID
 		player.position = spawn_pos # set spawn position
 		player.set_network_master(p_id) # set yourself as network master
-		
+			
 		if p_id == get_tree().get_network_unique_id():
 			# handle setting network master info (you)
 			player.set_player_name(player_name)
 			player.set_player_frames(player_char)
-			var t = team_choices[randi()%team_choices.size()]
-			player.set_player_team(t)
-			team_choices.pop_front()
+			player.set_player_team(player_team)
 		else:
 			# handle setting other players (not you)
 			player.set_player_name(players[p_id].name)
 			player.set_player_frames(players[p_id].character)
-			var t = team_choices[randi()%team_choices.size()]
-			player.set_player_team(t)
-			team_choices.pop_front()
+			player.set_player_team(players[p_id].team)
 		
 		# add to Level1 Ysort node (this is brittle)
 		world.get_node("YSort").add_child(player)
 		player.connect("player_gained_item", self, "_player_gained_item")
-		
-		var all_items = Globals.item_graphics.keys()
-		var item_spawn_points = world.get_node("PickupSpawns").get_children()
-		item_spawn_points.shuffle()
-		for i in item_count:
-			var item = load("res://PickupItem.tscn").instance()
-			var item_graphic = all_items[randi()%all_items.size()]
-			print("Spawning a " + str(item_graphic))
-			var item_pos = item_spawn_points[0].global_position
-			item_spawn_points.pop_front()
-			item.global_position = item_pos
-			world.add_child(item)
-			item._set_graphic(item_graphic)
-			
-			
-
+	
+	
+	var item_spawn_locations = world.get_node("YSort/PickupSpawns").get_children()
+	var ii = 0
+	item_spawn_locations.shuffle()
+	
+	for item in item_spawn_points:
+		var Item = load("res://PickupItem.tscn").instance()
+		var item_graphic = item
+		var item_pos = item_spawn_locations[ii].global_position
+		Item.global_position = item_pos
+		#print("Spawning  " + item_graphic + " at " + str(item_pos))
+		get_tree().get_root().get_node("Level1/YSort").add_child(Item)
+		Item._set_graphic(item_graphic)
+		ii+= 1
+	
+	var dropzone_spawns = get_tree().get_root().get_node("Level1/DropzoneSpawns").get_children()
+	
+	for i in range(2):
+		var dropzone = load("res://Dropzone.tscn").instance()
+		dropzone.global_position = dropzone_spawns[i].global_position
+		get_tree().get_root().get_node("Level1/YSort").add_child(dropzone)
+		dropzone.connect("quest_item_dropped", self, "ui_quest_update")
+	
 	# Set up score.
 	#world.get_node("Score").add_player(get_tree().get_network_unique_id(), player_name)
 	#for pn in players:
@@ -153,6 +155,7 @@ remote func pre_start_game(spawn_points):
 		rpc_id(1, "ready_to_start", get_tree().get_network_unique_id())
 	elif players.size() == 0:
 		post_start_game()
+		
 
 remote func post_start_game():
 	get_tree().set_pause(false) # Unpause and unleash the game!
@@ -168,7 +171,6 @@ remote func ready_to_start(id):
 			rpc_id(p, "post_start_game")
 		post_start_game()
 
-
 func host_game(new_player_name, new_player_char):
 	player_name = new_player_name
 	player_char = new_player_char
@@ -176,14 +178,12 @@ func host_game(new_player_name, new_player_char):
 	host.create_server(DEFAULT_PORT, MAX_PEERS)
 	get_tree().set_network_peer(host)
 
-
 func join_game(ip, new_player_name, new_player_char):
 	player_name = new_player_name
 	player_char = new_player_char
 	var client = NetworkedMultiplayerENet.new()
 	client.create_client(ip, DEFAULT_PORT)
 	get_tree().set_network_peer(client)
-
 
 func get_player_list():
 	return players.values()
@@ -194,8 +194,12 @@ func get_player_name():
 
 
 func begin_game():
-	assert(get_tree().is_network_server())
-
+	assert(get_tree().is_network_server()) # ONLY HOST
+	
+	# create item quest for seekers
+	item_quest = Globals.create_item_quest(num_items,item_types)
+	rset("item_quest", item_quest)
+	
 	# Create a dictionary with peer id and respective spawn points, could be improved by randomizing.
 	var spawn_points = {}
 	# { 1 : Position2D[0],  12585822: Position2D[1] ... }
@@ -204,11 +208,44 @@ func begin_game():
 	for p in players:
 		spawn_points[p] = spawn_point_idx
 		spawn_point_idx += 1
+	
+	# set up the teams
+	# one seeker, everyone else a hider
+	var team_choices = ["seeker"] # start with one seeker always
+	for _n in range(spawn_points.size()-1): # size-1 because we already have a seeker
+		team_choices.append("hider") # fill the array with hiders based on how many players are spawning
+	team_choices.shuffle() # randomize the team array
+	print(team_choices)
+	player_team = team_choices[0]
+	var it = 1
+	for p in players:
+		players[p].team = team_choices[it]
+		it += 1
+		
+	# generate items and quests here ... i think
+	# NO
+	# create arrays of the items and where they go
+	# then send to pre_start_game to generate same items for each player
+	
+	# items and quests need to be the same for each player ...
+	var all_items = Globals.item_graphics.keys() # item names
+	
+	var item_spawn_points = [] # ["apple", "banana", "pizza", ...]
+	for i in item_quest:
+		for _num_items in i[0]:
+			item_spawn_points.append(i[1])
+	for i in range(30): # add 30 more items to the list
+		item_spawn_points.append(all_items[randi()%all_items.size()])
+		
+	var dropzone_spawn_points = []
+	#for i in range(2):
+		#dropzone_spawn_points.append()
+		
 	# Call to pre-start game with the spawn points.
 	for p in players:
-		rpc_id(p, "pre_start_game", spawn_points)
+		rpc_id(p, "pre_start_game", spawn_points, item_spawn_points) # runs on everyone else
 
-	pre_start_game(spawn_points)
+	pre_start_game(spawn_points, item_spawn_points) # runs on this machine
 
 
 func end_game():
@@ -218,6 +255,7 @@ func end_game():
 	players.clear()
 
 func _ready():
+	
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self,"_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
@@ -231,3 +269,6 @@ func _player_gained_item(item_type, player_id):
 	p.set_held_item(item_type)
 
 
+func ui_quest_update():
+	var q = get_tree().get_root().get_node("Level1/UI")
+	q.update_quest_text()

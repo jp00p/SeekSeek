@@ -9,9 +9,15 @@ var can_run = true
 var speed = 0
 var walk_speed = 125
 var run_speed = 175
+
+var seeker_walk_speed = 115
+var seeker_run_speed = 150
+
 var running = false
-var max_stamina = 100
-var stamina
+var max_stamina = 50
+var seeker_max_stamina = 150
+var stamina = max_stamina
+
 var team
 var carried_item = ""
 var throw_distance = 25
@@ -19,45 +25,41 @@ var throw_dir = Vector2()
 
 var coins = 0
 
-var character_graphics = {
-	"pokey" : preload("res://Characters/pokey.tres"),
-	"pizzagirl" : preload("res://Characters/pizzagirl.tres"),
-	"mrsaturn" : preload("res://Characters/mrsaturn.tres"),
-	"frank" : preload("res://Characters/frank.tres")
-}
 
 var velocity = Vector2()
-var frames = character_graphics["pokey"]
+var frames = Globals.character_graphics["pokey"]
 var direction
 var flashlight_on = true
 
 # info of players that aren't the network master
-puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "", "puppet_flashlight": true, "carried_item" : "" }
+puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "", "puppet_flashlight_on": true, "carried_item" : "" }
 
 func _ready():
+	$PlayerName.text = str(team)
 	$Sprite.set_sprite_frames(frames)
+	
 	if is_network_master():
 		$Camera2D.make_current() # one camera per player
 	
 	# seeker is a little slower but can run longer
 	if team == "seeker":
-		walk_speed = 115
-		run_speed = 150
-		max_stamina = 200
-		
-	stamina = max_stamina
+		print("You are the seeker!")
+		walk_speed = seeker_walk_speed
+		run_speed = seeker_run_speed
+		max_stamina = seeker_max_stamina
+		get_tree().get_root().get_node("Level1/Nighttime").set_visible(false)
+
+
 
 func _physics_process(delta):
-	$PlayerName.text = str(stamina)
 	
 	if is_network_master():
 		# YOUR OWN SETTINGS
 		get_input()
 		$Flashlight.enabled = flashlight_on
 		velocity = move_and_slide(velocity)
-		
 		$RayCast2D.cast_to = throw_dir
-		
+
 		# set your info for other people to see!
 		rset("puppet_info", { "puppet_pos": position, "puppet_dir": direction, "puppet_flashlight_on": flashlight_on })
 		
@@ -71,6 +73,9 @@ func get_input():
 	velocity = Vector2.ZERO
 	if !can_move:
 		return
+	
+	if team == "seeker" and Input.is_action_just_pressed('hotkey2'):
+		get_tree().get_root().get_node("Level1").set_night()
 	
 	# did we press the flashlight button		
 	if Input.is_action_just_pressed('light'):
@@ -147,7 +152,7 @@ func set_player_name(new_name):
 	#$PlayerName.text = str(new_name)
 	
 func set_player_frames(char_name):
-	frames = character_graphics[char_name]
+	frames = Globals.character_graphics[char_name]
 	
 func set_player_team(team_choice):
 	team = team_choice

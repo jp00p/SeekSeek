@@ -10,7 +10,8 @@ func _set_graphic(g):
 	$Sprite.texture = Globals.item_graphics[g]
 
 func _on_Area2D_body_entered(body):
-	print(body)
+	if body.filename != "res://Player.tscn":
+		return
 	if body.team == "seeker":
 		pass
 	if body.has_item():
