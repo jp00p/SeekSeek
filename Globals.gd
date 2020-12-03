@@ -1,21 +1,11 @@
 extends Node
 
-
-# item quest
-# gather 3 items of 3 types
-# eg. 3 apples, 3 bananas, 3 shrooms
-# find the drop location
-# bring the items to the drop location
-# hiders win when all 9 items are placed!
-
-
 var character_graphics = {
 	"pokey" : preload("res://Characters/pokey.tres"),
 	"pizzagirl" : preload("res://Characters/pizzagirl.tres"),
 	"mrsaturn" : preload("res://Characters/mrsaturn.tres"),
 	"frank" : preload("res://Characters/frank.tres")
 }
-
 
 var item_graphics = {
 	"banana" : load("res://sprites/items/banana.png"),
@@ -29,7 +19,15 @@ var item_graphics = {
 	"shroom" : load("res://sprites/items/mushroom_05.png"),
 	"pizza" : load("res://sprites/items/pizza.png"),
 	"orange" : load("res://sprites/items/orange.png"),
-	"strawberry" : load("res://sprites/items/strawberry.png")
+	"strawberry" : load("res://sprites/items/strawberry.png"),
+	"tomato" : load("res://sprites/items/tomato.png"),
+	"onion" : load("res://sprites/items/onion.png"),
+	"onigiri" : load("res://sprites/items/onigiri.png"),
+	"cake" : load("res://sprites/items/cake_01.png"),
+	"avocado" : load("res://sprites/items/avocado.png"),
+	"cucumber" : load("res://sprites/items/cucumber.png"),
+	"garlic" : load("res://sprites/items/garlic.png"),
+	
 }
 
 func create_item_quest(num_items, num_types):
@@ -40,7 +38,6 @@ func create_item_quest(num_items, num_types):
 		var this_type = item_names[0]
 		item_names.pop_front()
 		item_quest.append([num_items, this_type])
-	print(item_quest)
 	return item_quest
 	
 func _ready():
@@ -51,20 +48,22 @@ var seeker_skills = [
 		"name" : "Kill",
 		"background" : "16_1.png",
 		"icon" : "kill.png",
-		"cooldown" : 100
+		"cooldown" : 45,
+		"cooldown_active" : false
 	},
 	{
 		"name" : "X-Ray",
 		"background" : "16_18.png",
 		"icon" : "16_43.png",
-		"cooldown" : 100
+		"cooldown" : 120,
+		"cooldown_active" : false
 	},
 	{
 		"name" : "Night",
 		"background" : "32_14.png",
 		"icon" : "night.png",
-		"cooldown" : 100
-	},
-	
+		"cooldown" : 120,
+		"cooldown_active" : false
+	}	
 	
 ]

@@ -6,6 +6,8 @@ onready var player_list = $Margin/Players/MarginContainer/VBoxContainer/List
 
 var pname = "" # nickname placeholder
 var character = "pokey" # character selection
+var item_types = 3
+var item_count = 3
 
 func _ready():
 	gamestate.connect("connection_failed", self, "_on_connection_failed")
@@ -15,7 +17,7 @@ func _ready():
 	gamestate.connect("game_error", self, "_on_game_error")
 
 func _set_buttons_disabled(d):
-	$Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host/Center/HostButton.disabled = d
+	$Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Host/Center/VBoxContainer/HostButton.disabled = d
 	$Margin/LobbyContainer/TabPanel/TabMargin/TabContainer/Join/ipwrap/IpBox/JoinButton.disabled = d
 
 # hosting a game
@@ -26,7 +28,7 @@ func _on_HostButton_pressed():
 	$Margin/LobbyContainer.hide()
 	$Margin/Players.show()
 	error_text.text = ""
-	gamestate.host_game(pname, character)
+	gamestate.host_game(pname, character, item_types, item_count)
 	refresh_lobby()
 
 # joining a game
@@ -79,11 +81,6 @@ func refresh_lobby():
 func _start_game():
 	gamestate.begin_game()
 
-
-
-
-
-
 # character selection -- there must be a better way (build buttons with code, connect programmatically)
 func _on_Pokey_pressed():
 	character = "pokey"
@@ -106,3 +103,10 @@ func _on_jeremy_pressed():
 
 func _on_ashley_pressed():
 	ip_addr.text = "24.53.110.145"
+
+
+func _on_ItemTypes_text_changed(new_text):
+	item_types = int(new_text)
+
+func _on_ItemCount_text_changed(new_text):
+	item_count = int(new_text)

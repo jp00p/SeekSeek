@@ -18,7 +18,7 @@ radius = 2.75
 height = 0.0
 
 [sub_resource type="CircleShape2D" id=4]
-radius = 32.3973
+radius = 61.2973
 
 [node name="Player" type="KinematicBody2D"]
 scale = Vector2( 0.5, 0.5 )
@@ -50,7 +50,6 @@ smoothing_speed = 16.0
 [node name="Sprite" type="AnimatedSprite" parent="."]
 material = SubResource( 2 )
 frames = ExtResource( 2 )
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -60,7 +59,6 @@ scale = Vector2( 2.78133, 2.80522 )
 shape = SubResource( 3 )
 
 [node name="Flashlight" type="Light2D" parent="."]
-visible = false
 position = Vector2( 0.525024, 0 )
 texture = ExtResource( 3 )
 texture_scale = 0.5
@@ -76,9 +74,9 @@ one_shot = true
 
 [node name="HeldItem" type="TextureRect" parent="."]
 margin_left = -12.0
-margin_top = -48.0
+margin_top = -44.0
 margin_right = 12.0
-margin_bottom = -24.0
+margin_bottom = -20.0
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -89,6 +87,8 @@ __meta__ = {
 enabled = true
 
 [node name="KillRadius" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="KillRadius"]
 shape = SubResource( 4 )

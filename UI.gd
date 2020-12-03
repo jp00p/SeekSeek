@@ -4,37 +4,44 @@ onready var chat_display = $Chat/ChatText
 var chat_visible = false
 
 func _ready():
-	var hotkey_count = 1
-	
-	for skill in Globals.seeker_skills:
-		var skillbox = load("res://SeekerPower.tscn").instance()
-		skillbox.skill_name = skill.name
-		skillbox.background = skill.background
-		skillbox.icon_image = skill.icon
-		skillbox.hotkey = hotkey_count
-		skillbox.cooldown = skill.cooldown
-		hotkey_count += 1
-		$SeekerPowers.add_child(skillbox)
+	var player = get_tree().get_root().get_node("Level1/YSort/Players/"+str(get_tree().get_network_unique_id()))
+	$Chat.modulate.a = 0.75
+	if player.team == "seeker":
+		var _hotkey_count = 1
+		for skill in Globals.seeker_skills:
+			var skillbox = load("res://SeekerPower.tscn").instance()
+			skillbox.skill_name = skill.name
+			skillbox.background = skill.background
+			skillbox.icon_image = skill.icon
+			skillbox.hotkey = _hotkey_count
+			skillbox.cooldown = skill.cooldown
+			skillbox.name = "Skill_" + str(_hotkey_count)
+			_hotkey_count += 1
+			$SeekerPowers.add_child(skillbox)
 	
 	for q in gamestate.item_quest:
 		var lab = Label.new()
 		lab.text = str(q[0]) + " " + str(q[1])
-		$Quests.add_child(lab)
+		$QPanel/QMargin/Quests.add_child(lab)
+
 		
 		
-func _process(delta):
-	pass
+func set_cooldown(skill):
+	var skillbox = get_node("SeekerPowers/Skill_"+str(skill+1))
+	skillbox.start_cooldown()
 
 func update_quest_text():
 	# remove text
-	for n in $Quests.get_children():
+	for n in $QPanel/QMargin/Quests.get_children():
+		$QPanel/QMargin/Quests.remove_child(n)
 		n.queue_free()
 	
 	# re-add text
 	for q in gamestate.item_quest:
 		var lab = Label.new()
+		lab.autowrap = true
 		lab.text = str(q[0]) + " " + str(q[1])
-		$Quests.add_child(lab)
+		$QPanel/QMargin/Quests.add_child(lab)
 
 func _on_ChatSend_pressed():
 	var msg = $Chat/ChatControl/ChatInput.text
@@ -53,13 +60,13 @@ sync func receive_message(id, msg):
 func _on_ChatInput_focus_entered():
 	$Chat.modulate.a = 1
 	var id = get_tree().get_network_unique_id()
-	var p = get_tree().get_root().get_node("Level1/YSort/"+str(id))
+	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(id))
 	p.can_move = false
 
 func _on_ChatInput_focus_exited():
-	$Chat.modulate.a = 0.33
+	$Chat.modulate.a = 0.75
 	var id = get_tree().get_network_unique_id()
-	var p = get_tree().get_root().get_node("Level1/YSort/"+str(id))
+	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(id))
 	p.can_move = true
 
 func _input(event):

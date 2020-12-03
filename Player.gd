@@ -1,7 +1,14 @@
 extends KinematicBody2D
 
+# moving after being tagged???
+# game doesn't fully restart
+
+# turn to zombie?!
+
 signal gained_coin
 signal player_gained_item(item_type, player_id)
+
+var is_zombie = false
 
 var can_move = true
 var can_run = true
@@ -14,8 +21,8 @@ var seeker_walk_speed = 115
 var seeker_run_speed = 150
 
 var running = false
-var max_stamina = 50
-var seeker_max_stamina = 150
+var max_stamina = 100
+var seeker_max_stamina = 200
 var stamina = max_stamina
 
 var team
@@ -29,59 +36,84 @@ var coins = 0
 var velocity = Vector2()
 var frames = Globals.character_graphics["pokey"]
 var direction
-var flashlight_on = true
 
 # info of players that aren't the network master
-puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "", "puppet_flashlight_on": true, "carried_item" : "" }
+puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "" }
 
 func _ready():
+
 	$PlayerName.text = str(team)
 	$Sprite.set_sprite_frames(frames)
+	$Flashlight.set_visible(false)
 	
 	if is_network_master():
 		$Camera2D.make_current() # one camera per player
 	
 	# seeker is a little slower but can run longer
-	if team == "seeker":
-		print("You are the seeker!")
+	if team == "seeker" and is_network_master():
 		walk_speed = seeker_walk_speed
 		run_speed = seeker_run_speed
 		max_stamina = seeker_max_stamina
-		get_tree().get_root().get_node("Level1/Nighttime").set_visible(false)
-
+		get_tree().get_root().get_node("Level1/MaskLayer/Mask").set_visible(false)
 
 
 func _physics_process(delta):
 	
 	if is_network_master():
-		# YOUR OWN SETTINGS
+		# handle yourself
 		get_input()
-		$Flashlight.enabled = flashlight_on
+		
 		velocity = move_and_slide(velocity)
 		$RayCast2D.cast_to = throw_dir
 
-		# set your info for other people to see!
-		rset("puppet_info", { "puppet_pos": position, "puppet_dir": direction, "puppet_flashlight_on": flashlight_on })
+		# set your info for other people to see! 
+		rset("puppet_info", { "puppet_pos": position, "puppet_dir": direction })
 		
 	else:
-		# WHAT OTHER PEOPLE SEE
+		# handle the fakes!
 		position = puppet_info.puppet_pos # x,y
 		_set_direction(puppet_info.puppet_dir) # which way are you facing
-		$Flashlight.enabled = puppet_info.puppet_flashlight_on # is your flashlight on
+
+
+func try_kill():
+	assert(is_network_master())
+	var bodies = $KillRadius.get_overlapping_bodies()
+	bodies.erase(self)
+	if bodies.size() > 0:
+		bodies.shuffle() # kill a random person in range
+		print("Attempting to kill " + bodies[0].name)
+		self.position = bodies[0].position
+		rpc("kill_player", bodies[0].name)
+		get_tree().get_root().get_node("Level1/UI").set_cooldown(0)
+
+
+sync func kill_player(p_id):
+	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(p_id))
+	p.can_move = false
+	p.modulate.r = 255
+	
 
 func get_input():
 	velocity = Vector2.ZERO
+	
 	if !can_move:
 		return
 	
+	if team == "seeker" and Input.is_action_just_pressed('hotkey1'):
+		if Globals.seeker_skills[0].cooldown_active:
+			return
+		try_kill()
 	if team == "seeker" and Input.is_action_just_pressed('hotkey2'):
+		if Globals.seeker_skills[1].cooldown_active:
+			return
+		get_tree().get_root().get_node("Level1").set_xray()
+	if team == "seeker" and Input.is_action_just_pressed('hotkey3'):
+		if Globals.seeker_skills[2].cooldown_active:
+			return
 		get_tree().get_root().get_node("Level1").set_night()
 	
-	# did we press the flashlight button		
-	if Input.is_action_just_pressed('light'):
-		flashlight_on = !flashlight_on
-		rset("puppet_flashlight_on", flashlight_on)
-	if carried_item != "" and Input.is_action_just_pressed("drop_item"):
+
+	if carried_item != "" and Input.is_action_just_pressed("drop_item") and team != "seeker":
 		drop_item()
 	
 	# are we pressing run and can we run?
@@ -96,6 +128,10 @@ func get_input():
 		running = false
 		if can_run:
 			stamina = min(stamina+1, max_stamina)
+	
+	if carried_item != "":
+		speed = speed - 25
+		$Sprite.speed_scale = 0.5
 	
 	# once stamina hits 0, no more running and start the timer
 	if stamina <= 0 and running:
@@ -151,12 +187,20 @@ func set_player_name(new_name):
 	pass
 	#$PlayerName.text = str(new_name)
 	
+func pass_through_door():
+	can_move = false
+	yield(get_tree().create_timer(0.33), "timeout")
+	can_move = true
+	
 func set_player_frames(char_name):
 	frames = Globals.character_graphics[char_name]
 	
 func set_player_team(team_choice):
 	team = team_choice
 	$PlayerName.text = str(team_choice)
+	
+func set_flashlight(state):
+	$Flashlight.set_visible(state)
 	
 func _gain_coin():
 	coins += 1
@@ -187,10 +231,10 @@ func has_item():
 	return false
 
 sync func player_dropped_item(item_type, location, player_id):
-	print("GAMESTATE: Dropping item " + str(item_type) + " at location: " + str(location))
+	#print("GAMESTATE: Dropping item " + str(item_type) + " at location: " + str(location))
 	var new_item = load("res://PickupItem.tscn").instance()
 	new_item.global_position = location
-	get_tree().get_root().get_node("Level1").add_child(new_item)
+	get_tree().get_root().get_node("Level1/YSort/Items").add_child(new_item)
 	new_item._set_graphic(item_type)
-	var p = get_tree().get_root().get_node("Level1/YSort").get_node(player_id)
+	var p = get_tree().get_root().get_node("Level1/YSort/Players").get_node(player_id)
 	p.set_held_item("none")

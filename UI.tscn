@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://UI.gd" type="Script" id=1]
 [ext_resource path="res://Fonts/statusplz.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://LobbyUI/EB_Panel.tres" type="StyleBox" id=3]
 
 [sub_resource type="DynamicFont" id=1]
 size = 14
@@ -27,6 +28,12 @@ tracks/0/keys = {
 "values": [ Vector2( -277, 362 ), Vector2( 2, 362 ) ]
 }
 
+[sub_resource type="DynamicFont" id=4]
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=5]
+default_font = SubResource( 4 )
+
 [node name="UI" type="CanvasLayer"]
 script = ExtResource( 1 )
 
@@ -44,6 +51,7 @@ __meta__ = {
 margin_right = 272.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 140, 120 )
+custom_styles/normal = ExtResource( 3 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/line_number_color = Color( 0, 0, 0, 1 )
 readonly = true
@@ -60,14 +68,16 @@ margin_right = 272.0
 margin_bottom = 149.0
 
 [node name="ChatInput" type="LineEdit" parent="Chat/ChatControl"]
-margin_right = 218.0
+margin_right = 210.0
 margin_bottom = 25.0
 size_flags_horizontal = 3
+custom_styles/normal = ExtResource( 3 )
 
 [node name="ChatSend" type="Button" parent="Chat/ChatControl"]
-margin_left = 222.0
+margin_left = 214.0
 margin_right = 272.0
 margin_bottom = 25.0
+custom_styles/normal = ExtResource( 3 )
 text = "Send"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Chat"]
@@ -86,15 +96,41 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Quests" type="VBoxContainer" parent="."]
+[node name="QPanel" type="PanelContainer" parent="."]
+self_modulate = Color( 1, 1, 1, 0.784314 )
 anchor_left = 1.0
-anchor_top = 0.5
+anchor_top = 0.47
 anchor_right = 1.0
-anchor_bottom = 0.5
-margin_left = -72.5178
-margin_top = -18.6637
-margin_right = -7.51782
-margin_bottom = 21.3363
+anchor_bottom = 0.53
+margin_left = -200.0
+margin_top = -3.05176e-05
+margin_bottom = -3.05176e-05
+rect_min_size = Vector2( 200, 36 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_styles/panel = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="QMargin" type="MarginContainer" parent="QPanel"]
+margin_left = 10.0
+margin_top = 13.0
+margin_right = 190.0
+margin_bottom = 23.0
+size_flags_vertical = 4
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="Quests" type="VBoxContainer" parent="QPanel/QMargin"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 175.0
+margin_bottom = 5.0
+size_flags_vertical = 4
+theme = SubResource( 5 )
 custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
