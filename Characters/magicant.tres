@@ -1,0 +1,26 @@
+[gd_resource type="SpriteFrames" load_steps=7 format=2]
+
+[ext_resource path="res://sprites/char/magicant/magicant_side_1.png" type="Texture" id=1]
+[ext_resource path="res://sprites/char/magicant/magicant_back_1.png" type="Texture" id=2]
+[ext_resource path="res://sprites/char/magicant/magicant_side_2.png" type="Texture" id=3]
+[ext_resource path="res://sprites/char/magicant/magicant_front_2.png" type="Texture" id=4]
+[ext_resource path="res://sprites/char/magicant/magicant_front_1.png" type="Texture" id=5]
+[ext_resource path="res://sprites/char/magicant/magicant_back_2.png" type="Texture" id=6]
+
+[resource]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "back",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "side",
+"speed": 5.0
+} ]

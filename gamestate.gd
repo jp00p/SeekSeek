@@ -13,11 +13,12 @@ extends Node
 # rpcs = run functions on some/all players' machines
 # unreliable = for quick but dirty data (udp vs tcp)
 
-const DEFAULT_PORT = 10567 # need to open this on router, or let host choose?
+const DEFAULT_PORT = 6073 #10567
 const MAX_PEERS = 12
 
 var game_item_count
 var game_item_types
+var game_dropzone_count = 2
 sync var item_quest
 
 # these are always the details for YOU
@@ -79,7 +80,7 @@ func unregister_player(id):
 	players.erase(id)
 	emit_signal("player_list_changed")
 
-remote func pre_start_game(spawn_points, item_spawn_points, team_choices):
+remote func pre_start_game(spawn_points, item_spawn_points, drop_points, team_choices):
 	# could let the host choose a level... 
 	# but for now most of the game is dependent on being in Level1
 	var world = load("res://Level1.tscn").instance()
@@ -87,10 +88,7 @@ remote func pre_start_game(spawn_points, item_spawn_points, team_choices):
 	# important: we don't change_scene() in this game.
 	# we load the level here
 	get_tree().get_root().add_child(world)
-	
-	
-		
-		
+			
 	# hide the lobby instead of freeing it
 	# then we can pop back into it on error/exit
 	get_tree().get_root().get_node("LobbySetup").hide()
@@ -99,7 +97,7 @@ remote func pre_start_game(spawn_points, item_spawn_points, team_choices):
 	var player_scene = load("res://Player.tscn")
 	
 	for p_id in spawn_points:
-		# spawn the players in specific spots! (todo: randomize these spots)
+		# spawn the players in random spots!
 		var spawn_pos = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position  # warning: we need a spawn point for each player!
 		var player = player_scene.instance()
 		
@@ -108,13 +106,13 @@ remote func pre_start_game(spawn_points, item_spawn_points, team_choices):
 		player.set_network_master(p_id) # set yourself as network master
 			
 		if p_id == get_tree().get_network_unique_id():
-			print("Setting " + str(p_id) + " to " + str(team_choices[0]))
+			#print("Setting " + str(p_id) + " to " + str(team_choices[0]))
 			# handle setting network master info (you)
 			player.set_player_name(player_name)
 			player.set_player_frames(player_char)
 			player.set_player_team(team_choices[0])
 		else:
-			print("Setting " + str(p_id) + " to " + str(team_choices[0]))
+			#print("Setting " + str(p_id) + " to " + str(team_choices[0]))
 			# handle setting other players (not you)
 			player.set_player_name(players[p_id].name)
 			player.set_player_frames(players[p_id].character)
@@ -139,24 +137,21 @@ remote func pre_start_game(spawn_points, item_spawn_points, team_choices):
 		#print("Spawning  " + item_graphic + " at " + str(item_pos))
 		get_tree().get_root().get_node("Level1/YSort/Items").add_child(Item)
 		Item._set_graphic(item_graphic)
-		ii+= 1
+		ii += 1
 	
-	var dropzone_spawns = get_tree().get_root().get_node("Level1/DropzoneSpawns").get_children()
+	var dropzone_spawn_locations = get_tree().get_root().get_node("Level1/DropzoneSpawns").get_children()
 	
-	for i in range(2):
+	for i in drop_points:
 		var dropzone = load("res://Dropzone.tscn").instance()
-		dropzone.global_position = dropzone_spawns[i].global_position
+		dropzone.global_position = dropzone_spawn_locations[i].global_position
+		#print("Spawning a drop point at " + str(dropzone.global_position))
 		get_tree().get_root().get_node("Level1/YSort").add_child(dropzone)
 		dropzone.connect("quest_item_dropped", self, "ui_quest_update")
 	
 	var ui = load('res://UI.tscn').instance()
 	world.add_child(ui)
 	
-	# Set up score.
-	#world.get_node("Score").add_player(get_tree().get_network_unique_id(), player_name)
-	#for pn in players:
-	#	world.get_node("Score").add_player(pn, players[pn])
-
+	
 	if not get_tree().is_network_server():
 		# Tell server we are ready to start.
 		rpc_id(1, "ready_to_start", get_tree().get_network_unique_id())
@@ -178,11 +173,12 @@ remote func ready_to_start(id):
 			rpc_id(p, "post_start_game")
 		post_start_game()
 
-func host_game(new_player_name, new_player_char, item_types, item_count):
+func host_game(new_player_name, new_player_char, item_types, item_count, dropzone_count):
 	player_name = new_player_name
 	player_char = new_player_char
 	game_item_types = item_types
 	game_item_count = item_count
+	game_dropzone_count = dropzone_count
 	var host = NetworkedMultiplayerENet.new()
 	host.create_server(DEFAULT_PORT, MAX_PEERS)
 	get_tree().set_network_peer(host)
@@ -210,10 +206,12 @@ func begin_game():
 	rset("item_quest", item_quest)
 	
 	
-	var world = load("res://Level1.tscn").instance()
-	var spawn_nodes = range(world.get_node("SpawnPoints").get_children().size())  # [0, 1, 2, 3...]
+	var world = load("res://Level1.tscn").instance() # just peeking at level1 before we actually add it to the tree
+	var spawn_nodes = range(world.get_node("SpawnPoints").get_children().size())
 	var item_spawn_nodes = range(world.get_node("YSort/PickupSpawns").get_children().size()-(game_item_count*game_item_types))
+	var dropzone_spawn_nodes = range(world.get_node("DropzoneSpawns").get_children().size())
 	spawn_nodes.shuffle() # [2, 0, 1, 3...]
+	dropzone_spawn_nodes.shuffle()
 	world.queue_free()
 	
 
@@ -227,32 +225,39 @@ func begin_game():
 	
 	# set up the teams
 	# one seeker, everyone else a hider
-	var team_choices = ["hider"] # start with one seeker always
+	var team_choices = ["seeker"] # start with one seeker always
 	for _n in range(spawn_points.size()-1): # size-1 because we already have a seeker
 		team_choices.append("hider") # fill the array with hiders based on how many players are spawning
 	team_choices.shuffle() # randomize the team array
-		
+	
 
 	# create arrays of the items and where they go
 	# then send to pre_start_game to generate same items for each player	
 	var all_items = Globals.item_graphics.keys() # item names
+	var item_spawns = {}
 	
+	
+	# random item placement
 	var item_spawn_points = [] # ["apple", "banana", "pizza", ...]
 	for i in item_quest:
 		for _num_items in i[0]:
 			item_spawn_points.append(i[1])
-	for i in range(30): # add 30 more items to the list
+	#print("Spawning " + str(item_spawn_points.size()) + " quest items...")
+	var leftovers = item_spawn_nodes.size()-item_spawn_points.size()
+	#print("Spawning " + str(leftovers) + " random items!")
+	for i in range(item_spawn_nodes.size()-item_spawn_points.size()): # subtract the number of quest items from the total number of spawn points
 		item_spawn_points.append(all_items[randi()%all_items.size()])
-		
+	
+	# random dropzone placement
 	var dropzone_spawn_points = []
-	#for i in range(2):
-		#dropzone_spawn_points.append()
+	for i in range(game_dropzone_count):
+		dropzone_spawn_points.append(dropzone_spawn_nodes[randi()%dropzone_spawn_nodes.size()])
+	
 		
-	# Call to pre-start game with the spawn points.
+	# Call to pre-start game with all the random choices
 	for p in players:
-		rpc_id(p, "pre_start_game", spawn_points, item_spawn_points, team_choices) # runs on everyone else
-
-	pre_start_game(spawn_points, item_spawn_points, team_choices) # runs on this machine
+		rpc_id(p, "pre_start_game", spawn_points, item_spawn_points, dropzone_spawn_points, team_choices) # runs on everyone else
+	pre_start_game(spawn_points, item_spawn_points, dropzone_spawn_points, team_choices) # runs on this machine
 
 
 
@@ -263,9 +268,7 @@ func end_game():
 	players.clear()
 
 
-
 func _ready():
-	
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self,"_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
@@ -274,11 +277,21 @@ func _ready():
 
 
 func _player_gained_item(item_type, player_id):
-	print("Player: " + str(player_id) + " gained item: " + str(item_type))
+	#print("Player: " + str(player_id) + " gained item: " + str(item_type))
 	var p = get_tree().get_root().get_node("Level1/YSort/Players").get_node(player_id)
 	p.set_held_item(item_type)
 
 
 func ui_quest_update():
+	print(check_hider_quest())
 	var q = get_tree().get_root().get_node("Level1/UI")
 	q.update_quest_text()
+
+
+func check_hider_quest():
+	# returns true only if quest is complete
+	var total = 0
+	for i in item_quest:
+		total += int(i[0])
+	return total <= 0
+		

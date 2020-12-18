@@ -18,48 +18,29 @@ extends Node
 var is_night = false
 var is_xray = false
 
-remotesync var team_coins = 0
-
-master func _add_team_coin():
-	team_coins += 1
-	_set_team_coins()
-	
-master func _set_team_coins():
-	rset("team_coins", team_coins)
-	
-func _on_player_coin_gain():
-	rpc_id(1, "_add_team_coin")
-
 func _ready():
-	# this cleans up camera smoothing (but why?!)
-	Engine.set_target_fps(Engine.get_iterations_per_second())
+	Engine.set_target_fps(Engine.get_iterations_per_second()) # this cleans up camera smoothing (but why?!)
+	
 	$TileMap.set_visible(false)
 	$MaskLayer/Mask.modulate.a = 0
-	
-func _on_Area2D_body_entered(body):
-	print(body.name)
-	body.position = $"Floors/burger-shop-inside/Position2D".global_position
-	body.get_node("Camera2D").force_update_scroll()
-	pass
-
-func _on_ShopExit_body_entered(body):
-	body.position = $"SpawnPoints/0".global_position
-	pass
-	
+		
 func set_night():
+	# setup nighttime power 
 	rpc("nighttime")
 	get_node("UI").set_cooldown(2) # skills are 0,1,2 (hotkeys are 1,2,3)
 	
 func set_xray():
+	# setup xray power
 	xray()
 	rpc("xray_blast")
 	get_node("UI").set_cooldown(1)
 	
 remotesync func xray_blast():
+	# show the xray animation to everyone
 	$MaskLayer/XrayBlast.play()
 
 remotesync func nighttime():
-	print("night :O")
+	# show the nighttime stuff for everyone
 	is_night = true
 	$AnimationPlayer.play("nighttime")
 	$NightTimer.start()
@@ -68,12 +49,13 @@ remotesync func nighttime():
 			p.set_flashlight(true)
 	
 master func xray():
+	# show xray stuff (only for person who used it)
 	is_xray = true
 	$Tops.modulate.a = 0.5
 	$XrayTimer.start()
 
 func _on_NightTimer_timeout():
-	print("Night time is over!")
+	# end the night effect
 	is_night = false
 	for p in $YSort/Players.get_children():
 		p.set_flashlight(false)
@@ -81,5 +63,6 @@ func _on_NightTimer_timeout():
 
 
 func _on_XrayTimer_timeout():
+	# end xray
 	is_xray = false
 	$Tops.modulate.a = 1

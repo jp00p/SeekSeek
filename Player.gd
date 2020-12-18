@@ -5,7 +5,6 @@ extends KinematicBody2D
 
 # turn to zombie?!
 
-signal gained_coin
 signal player_gained_item(item_type, player_id)
 
 var is_zombie = false
@@ -14,15 +13,21 @@ var can_move = true
 var can_run = true
 
 var speed = 0
-var walk_speed = 125
-var run_speed = 175
+var hider_walk_speed = 125
+var hider_run_speed = 175
 
 var seeker_walk_speed = 115
-var seeker_run_speed = 150
+var seeker_run_speed = 185
+
+var zombie_walk_speed = 50
+var zombie_run_speed = 75
+
+var walk_speed
+var run_speed
 
 var running = false
-var max_stamina = 100
-var seeker_max_stamina = 200
+var max_stamina = 200
+var seeker_max_stamina = 100
 var stamina = max_stamina
 
 var team
@@ -30,12 +35,12 @@ var carried_item = ""
 var throw_distance = 25
 var throw_dir = Vector2()
 
-var coins = 0
-
-
 var velocity = Vector2()
 var frames = Globals.character_graphics["pokey"]
 var direction
+
+var cam_scale_normal = Vector2(0.25, 0.25)
+var cam_scale_running = Vector2(0.2, 0.2)
 
 # info of players that aren't the network master
 puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "" }
@@ -50,29 +55,42 @@ func _ready():
 		$Camera2D.make_current() # one camera per player
 	
 	# seeker is a little slower but can run longer
-	if team == "seeker" and is_network_master():
-		walk_speed = seeker_walk_speed
-		run_speed = seeker_run_speed
+	if is_network_master() and team == "seeker":
+		set_speed(seeker_walk_speed, seeker_run_speed)
 		max_stamina = seeker_max_stamina
 		get_tree().get_root().get_node("Level1/MaskLayer/Mask").set_visible(false)
+	if is_network_master() and team != "seeker":
+		set_speed(hider_walk_speed, hider_run_speed)
+		
+	if team == "seeker":
+		$SeekerTrail.set_visible(true)
 
 
 func _physics_process(delta):
+	var t = delta
 	
 	if is_network_master():
 		# handle yourself
 		get_input()
+		if running:
+			$Camera2D.zoom = $Camera2D.zoom.linear_interpolate(cam_scale_running, t)
+		else:
+			$Camera2D.zoom = $Camera2D.zoom.linear_interpolate(cam_scale_normal, t)
 		
 		velocity = move_and_slide(velocity)
 		$RayCast2D.cast_to = throw_dir
 
 		# set your info for other people to see! 
-		rset("puppet_info", { "puppet_pos": position, "puppet_dir": direction })
+		rset_unreliable("puppet_info", { "puppet_pos": position, "puppet_dir": direction })
 		
 	else:
 		# handle the fakes!
 		position = puppet_info.puppet_pos # x,y
 		_set_direction(puppet_info.puppet_dir) # which way are you facing
+
+
+
+
 
 
 func try_kill():
@@ -81,17 +99,35 @@ func try_kill():
 	bodies.erase(self)
 	if bodies.size() > 0:
 		bodies.shuffle() # kill a random person in range
-		print("Attempting to kill " + bodies[0].name)
-		self.position = bodies[0].position
-		rpc("kill_player", bodies[0].name)
-		get_tree().get_root().get_node("Level1/UI").set_cooldown(0)
+		if !bodies[0].is_zombie:
+			self.position = bodies[0].position
+			rpc("kill_player", bodies[0].name)
+			get_tree().get_root().get_node("Level1/UI").set_cooldown(0)
 
 
 sync func kill_player(p_id):
 	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(p_id))
-	p.can_move = false
-	p.modulate.r = 255
-	
+	p.become_zombie()
+
+
+func become_zombie():
+	set_speed(zombie_walk_speed, zombie_run_speed)
+	is_zombie = true
+	$ZombieRadius.set_monitoring(true)
+	$Sprite.set_sprite_frames(Globals.character_graphics["zombie"])
+	print(check_all_zombies())
+
+func check_all_zombies():
+	var all_players = get_tree().get_root().get_node("Level1/YSort/Players").get_children()
+	var zombie_count = 0
+	for p in all_players:
+		if p.is_zombie:
+			zombie_count += 1
+	if zombie_count >= (all_players.size()-1):
+		return true
+	return false
+		
+
 
 func get_input():
 	velocity = Vector2.ZERO
@@ -163,7 +199,7 @@ func get_input():
 		throw_dir = velocity.normalized() * throw_distance
 		if running:
 			stamina = max(stamina-1, 0)
-	
+			
 	_set_direction(direction) # set sprite direction
 	velocity = velocity.normalized() * speed # normalize so diagonals are same speed
 	
@@ -202,10 +238,6 @@ func set_player_team(team_choice):
 func set_flashlight(state):
 	$Flashlight.set_visible(state)
 	
-func _gain_coin():
-	coins += 1
-	emit_signal("gained_coin")
-
 func _on_StaminaCooldown_timeout():
 	can_run = true
 
@@ -213,7 +245,7 @@ func gain_item(item_type):
 	emit_signal("player_gained_item", item_type, self.name)
 
 func set_held_item(item_type):
-	print("Setting held item to " + str(item_type))
+	#print("Setting held item to " + str(item_type))
 	if item_type == "none" or item_type == "":
 		carried_item = ""
 		$HeldItem.texture = null
@@ -238,3 +270,22 @@ sync func player_dropped_item(item_type, location, player_id):
 	new_item._set_graphic(item_type)
 	var p = get_tree().get_root().get_node("Level1/YSort/Players").get_node(player_id)
 	p.set_held_item("none")
+
+func set_speed(ws, rs):
+	walk_speed = ws
+	run_speed = rs
+
+func _on_ZombieRadius_body_entered(body):
+	# if someone gets in range of a zombie
+	if body == self or body.is_zombie:
+		return
+	body.infect()
+	
+func infect():
+	# when a zombie touches another player they get infected
+	set_speed(50, 50)
+	$SlowTimer.start()
+	
+func _on_SlowTimer_timeout():
+	# reset hider speed
+	set_speed(hider_walk_speed, hider_run_speed)

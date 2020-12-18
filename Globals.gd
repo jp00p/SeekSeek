@@ -4,7 +4,23 @@ var character_graphics = {
 	"pokey" : preload("res://Characters/pokey.tres"),
 	"pizzagirl" : preload("res://Characters/pizzagirl.tres"),
 	"mrsaturn" : preload("res://Characters/mrsaturn.tres"),
-	"frank" : preload("res://Characters/frank.tres")
+	"frank" : preload("res://Characters/frank.tres"),
+	"zombie" : preload("res://Characters/zombie.tres"),
+	"hippie": preload("res://Characters/hippie.tres"),
+	"applekid": preload("res://Characters/applekid.tres"),
+	"armsdealer": preload("res://Characters/armsdealer.tres"),
+	"bellhop": preload("res://Characters/bellhop.tres"),
+	"swimsuitguy": preload("res://Characters/bathingsuitguy.tres"),
+	"bunnystatue": preload("res://Characters/bunnystatue.tres"),
+	"grandma": preload("res://Characters/granny.tres"),
+	"magicant": preload("res://Characters/magicant.tres"),
+	"missfake": preload("res://Characters/missfake.tres"),
+	"nurse": preload("res://Characters/nurse.tres"),
+	"photographer": preload("res://Characters/photographer.tres"),
+	"punk": preload("res://Characters/punk.tres"),
+	"tenda": preload("res://Characters/tenda.tres"),
+	"tracy": preload("res://Characters/tracy.tres"),
+	"venus": preload("res://Characters/venus.tres")
 }
 
 var item_graphics = {

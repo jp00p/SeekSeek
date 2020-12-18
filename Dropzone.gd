@@ -16,5 +16,4 @@ func _on_Dropzone_area_entered(area):
 			dropped_item.queue_free()
 			gamestate.item_quest[i][0] = max(gamestate.item_quest[i][0]-1, 0)
 			emit_signal("quest_item_dropped")
-			
 			break
