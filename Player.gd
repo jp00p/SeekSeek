@@ -16,7 +16,7 @@ var speed = 0
 var hider_walk_speed = 125
 var hider_run_speed = 175
 
-var seeker_walk_speed = 115
+var seeker_walk_speed = 120
 var seeker_run_speed = 185
 
 var zombie_walk_speed = 50
@@ -26,18 +26,21 @@ var walk_speed
 var run_speed
 
 var running = false
-var max_stamina = 200
-var seeker_max_stamina = 100
+var max_stamina = 500
+var seeker_max_stamina = 250
 var stamina = max_stamina
 
 var team
 var carried_item = ""
-var throw_distance = 25
+var throw_distance = 22
 var throw_dir = Vector2()
 
 var velocity = Vector2()
 var frames = Globals.character_graphics["pokey"]
 var direction
+
+var player_name
+var close_calls
 
 var cam_scale_normal = Vector2(0.25, 0.25)
 var cam_scale_running = Vector2(0.2, 0.2)
@@ -92,7 +95,7 @@ func _physics_process(delta):
 
 
 
-
+# seeker attempting to kill a hider
 func try_kill():
 	assert(is_network_master())
 	var bodies = $KillRadius.get_overlapping_bodies()
@@ -105,29 +108,19 @@ func try_kill():
 			get_tree().get_root().get_node("Level1/UI").set_cooldown(0)
 
 
+
+# function that fires when a successful kill is made
 sync func kill_player(p_id):
 	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(p_id))
 	p.become_zombie()
 
-
+# when a hider dies, they become a zombie
 func become_zombie():
 	set_speed(zombie_walk_speed, zombie_run_speed)
 	is_zombie = true
 	$ZombieRadius.set_monitoring(true)
 	$Sprite.set_sprite_frames(Globals.character_graphics["zombie"])
-	print(check_all_zombies())
-
-func check_all_zombies():
-	var all_players = get_tree().get_root().get_node("Level1/YSort/Players").get_children()
-	var zombie_count = 0
-	for p in all_players:
-		if p.is_zombie:
-			zombie_count += 1
-	if zombie_count >= (all_players.size()-1):
-		return true
-	return false
-		
-
+	gamestate.check_game_over()
 
 func get_input():
 	velocity = Vector2.ZERO
@@ -135,7 +128,8 @@ func get_input():
 	if !can_move:
 		return
 	
-	if team == "seeker" and Input.is_action_just_pressed('hotkey1'):
+	if team == "seeker" and (Input.is_action_just_pressed('hotkey1') or Input.is_action_just_pressed("ui_select")):
+		gamestate.send_game_data()
 		if Globals.seeker_skills[0].cooldown_active:
 			return
 		try_kill()
@@ -220,7 +214,7 @@ func _set_direction(dir):
 
 
 func set_player_name(new_name):
-	pass
+	player_name = new_name
 	#$PlayerName.text = str(new_name)
 	
 func pass_through_door():
@@ -289,3 +283,7 @@ func infect():
 func _on_SlowTimer_timeout():
 	# reset hider speed
 	set_speed(hider_walk_speed, hider_run_speed)
+
+
+func _on_KillRadius_body_entered(body):
+	pass # Replace with function body.

@@ -9,9 +9,12 @@ var skill_key
 
 func _ready():
 	skill_key = hotkey-1
+	var icon_text = hotkey
+	if hotkey == 1:
+		icon_text = "Space"
 	$Background.texture = load("res://sprites/skills/"+str(background))
 	$Icon.texture = load("res://sprites/skills/"+str(icon_image))
-	$Hotkey.text = str(hotkey)
+	$Hotkey.text = str(icon_text)
 	$CooldownTimer.wait_time = cooldown
 	
 func _process(delta):

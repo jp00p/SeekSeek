@@ -6,7 +6,7 @@
 [ext_resource path="res://SeekerPower.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=1]
-size = 18
+size = 32
 outline_size = 1
 outline_color = Color( 0, 0, 0, 1 )
 use_mipmaps = true
@@ -54,9 +54,9 @@ tracks/0/keys = {
 
 [node name="Power" type="Panel"]
 margin_left = 488.0
-margin_right = 536.0
-margin_bottom = 48.0
-rect_min_size = Vector2( 48, 48 )
+margin_right = 552.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
 rect_clip_content = true
 size_flags_vertical = 0
 theme = SubResource( 2 )
@@ -99,8 +99,8 @@ __meta__ = {
 
 [node name="White" type="ColorRect" parent="."]
 self_modulate = Color( 1, 1, 1, 0 )
-margin_right = 48.0
-margin_bottom = 48.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 rect_min_size = Vector2( 48, 48 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -124,10 +124,10 @@ __meta__ = {
 [node name="Hotkey" type="Label" parent="."]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = -16.0
-margin_right = 5.0
-margin_bottom = -3.8147e-06
+margin_left = 8.0
+margin_top = -28.0
+margin_right = 18.0
+margin_bottom = -2.0
 text = "2"
 valign = 2
 __meta__ = {

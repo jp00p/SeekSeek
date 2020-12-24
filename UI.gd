@@ -5,10 +5,13 @@ var chat_visible = false
 
 func _ready():
 	var player = get_tree().get_root().get_node("Level1/YSort/Players/"+str(get_tree().get_network_unique_id()))
+	chat_display.text = ""
 	$Chat.modulate.a = 0.75
 	if player.team == "seeker":
+		$QPanel.set_visible(false)
 		var _hotkey_count = 1
 		for skill in Globals.seeker_skills:
+			# show seeker skills
 			var skillbox = load("res://SeekerPower.tscn").instance()
 			skillbox.skill_name = skill.name
 			skillbox.background = skill.background
@@ -20,18 +23,20 @@ func _ready():
 			$SeekerPowers.add_child(skillbox)
 	
 	for q in gamestate.item_quest:
+		# show item quest
 		var lab = Label.new()
 		lab.text = str(q[0]) + " " + str(q[1])
 		$QPanel/QMargin/Quests.add_child(lab)
-
-		
 		
 func set_cooldown(skill):
+	# start cooldown UI
 	var skillbox = get_node("SeekerPowers/Skill_"+str(skill+1))
 	skillbox.start_cooldown()
 
 func update_quest_text():
-	# remove text
+	# update quest UI
+	
+	# remove text first
 	for n in $QPanel/QMargin/Quests.get_children():
 		$QPanel/QMargin/Quests.remove_child(n)
 		n.queue_free()
@@ -44,12 +49,14 @@ func update_quest_text():
 		$QPanel/QMargin/Quests.add_child(lab)
 
 func _on_ChatSend_pressed():
+	$Chat/ChatControl/ChatInput.set_focus(false)
 	var msg = $Chat/ChatControl/ChatInput.text
 	if msg != "":
 		$Chat/ChatControl/ChatInput.text = ""
 		var id = get_tree().get_network_unique_id()
 		$Chat/ChatControl/ChatInput.release_focus()
 		rpc("receive_message", gamestate.player_name, msg)
+	
 	
 #sync happens on all clients (including local/server!)
 sync func receive_message(id, msg):
@@ -77,8 +84,8 @@ func _input(event):
 		_on_ChatSend_pressed()
 	if Input.is_action_just_pressed("chat") and !$Chat/ChatControl/ChatInput.has_focus():
 		if chat_visible:
-			$Chat/AnimationPlayer.play_backwards("show_chat")
+			#$Chat/AnimationPlayer.play_backwards("show_chat")
 			chat_visible = false
 		else:
-			$Chat/AnimationPlayer.play("show_chat")
+			#$Chat/AnimationPlayer.play("show_chat")
 			chat_visible = true

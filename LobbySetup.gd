@@ -2,13 +2,13 @@ extends Control
 
 onready var ip_addr = $Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/ipwrap/IpBox/HBoxContainer/IpAddr
 onready var error_text = $Margin/LobbyContainer/VBoxContainer/ErrorText
-onready var player_list = $Margin/Players/MarginContainer/VBoxContainer/List
+onready var player_list = $Margin/PCenter/Players/Margin/Vbox/List
 onready var game_list = $Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/ListOfGames
 onready var host_button = $Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Host/Center/VBoxContainer/HostButton
 onready var join_button = $Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/JoinButton
 onready var refresh_button = $Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/ipwrap/IpBox/Refresh
 onready var lobby_container = $Margin/LobbyContainer
-onready var lobby_player_list = $Margin/Players
+onready var lobby_player_list = $Margin/PCenter
 onready var lock_icon = load("res://sprites/lock.png")
 
 
@@ -24,6 +24,9 @@ var dropzone_count = 2
 var active_game_list
 var ip
 
+var random_game_name_parts_one = ["RunawayDog", "SpitefulCrow", "CoilSnake", "StarmanJr", "PogoPunk", "YesManJunior", "SkatePunk", "MasterBelch"]
+var random_game_name_parts_two = ["Lumine", "Fourside", "Twoson", "Threed", "Onett", "Summers", "PeacefulRest", "DustyDunes", "EagleLand", "Stonehenge", "GiantStep", "HappyHappy", "LakeTess", "Winters", "Magicant"]
+var random_player_name_parts = ["Aloysius", "Orange", "Andonuts", "Saturn", "Montague", "Geldegarde", "Talah", "Tessie", "Agerate", "Lardna", "Maxwell", "Carpainter", "Poochyfud", "NoName", "Buzz", "Strong", "Ruffini", "Giovanni", "Runaway"]
 
 func _ready():
 	gamestate.connect("connection_failed", self, "_on_connection_failed")
@@ -33,6 +36,23 @@ func _ready():
 	gamestate.connect("game_error", self, "_on_game_error")
 	$SendHostData.connect("request_completed", self, "host_data_sent")
 	error_text.text = ""
+	
+	# setup random names for debug 
+	var g1 = get_random_name(random_game_name_parts_two,1)
+	var g2 = get_random_name(random_game_name_parts_one,1)
+
+	game_name = str(g1)+str(g2)
+	$Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Host/Center/VBoxContainer/HBoxContainer/VBoxContainer2/GameNameContainer/GameName.text = game_name
+	var n = get_random_name(random_player_name_parts,2)
+	pname = n
+	$Margin/LobbyContainer/Name/HBoxContainer/NameEdit.text = n
+
+func get_random_name(parts, num):
+	parts.shuffle()
+	var r = ""
+	for i in range(num):
+		r += str(parts[i])
+	return r
 
 func _set_buttons_disabled(d):
 	host_button.disabled = d
@@ -117,7 +137,8 @@ func refresh_lobby():
 	player_list.add_item(gamestate.get_player_name() + " (You)")
 	for p in players:
 		player_list.add_item(p.name)
-	$Margin/Players/MarginContainer/VBoxContainer/Start.disabled = not get_tree().is_network_server()	
+	
+	$Margin/PCenter/Players/Margin/Vbox/StartGame.disabled = not get_tree().is_network_server()	
 
 func _start_game():
 	$SendHostData/Ping.queue_free()
@@ -221,7 +242,6 @@ func _on_TabContainer_tab_changed(tab):
 # when the HTTP request completes
 func _on_GetGameData_request_completed(result, response_code, headers, body):
 	var json = JSON.parse(body.get_string_from_utf8())
-	print(json.result)
 	active_game_list = json.result
 	refresh_button.set_disabled(false)
 	for game in json.result:
@@ -257,3 +277,6 @@ func _on_GamePassword_text_changed(new_text):
 # refresh intervals
 func _on_GameListPing_timeout():
 	get_game_list()
+
+func _on_EndgameReport_request_completed(result, response_code, headers, body):
+	pass # Replace with function body.

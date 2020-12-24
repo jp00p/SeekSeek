@@ -64,14 +64,14 @@ var seeker_skills = [
 		"name" : "Kill",
 		"background" : "16_1.png",
 		"icon" : "kill.png",
-		"cooldown" : 45,
+		"cooldown" : 15,
 		"cooldown_active" : false
 	},
 	{
 		"name" : "X-Ray",
 		"background" : "16_18.png",
 		"icon" : "16_43.png",
-		"cooldown" : 120,
+		"cooldown" : 60,
 		"cooldown_active" : false
 	},
 	{

@@ -18,9 +18,10 @@ extends Node
 var is_night = false
 var is_xray = false
 
+var player_list = []
+
 func _ready():
 	Engine.set_target_fps(Engine.get_iterations_per_second()) # this cleans up camera smoothing (but why?!)
-	
 	$TileMap.set_visible(false)
 	$MaskLayer/Mask.modulate.a = 0
 		
@@ -60,7 +61,6 @@ func _on_NightTimer_timeout():
 	for p in $YSort/Players.get_children():
 		p.set_flashlight(false)
 	$AnimationPlayer.play_backwards("nighttime")
-
 
 func _on_XrayTimer_timeout():
 	# end xray

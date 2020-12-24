@@ -15,6 +15,7 @@ extends Node
 
 const DEFAULT_PORT = 6073 #10567
 const MAX_PEERS = 12
+const DEFAULT_TEAMS = ["seeker"]
 
 var game_item_count
 var game_item_types
@@ -30,6 +31,11 @@ var player_team
 # { id: {name:string, character:string} }
 var players = {}
 var players_ready = []
+
+
+var time_start = 0
+var time_now = 0
+var elapsed = 0
 
 signal player_list_changed()
 signal connection_failed()
@@ -57,18 +63,15 @@ func _connected_ok():
 	# We just connected to a server
 	emit_signal("connection_succeeded")
 
-
 # Callback from SceneTree, only for clients (not server).
 func _server_disconnected():
 	emit_signal("game_error", "Server disconnected")
 	end_game()
 
-
 # Callback from SceneTree, only for clients (not server).
 func _connected_fail():
 	get_tree().set_network_peer(null) # Remove peer
 	emit_signal("connection_failed")
-
 
 # Lobby management functions.
 remote func register_player(new_player_name, new_player_char):
@@ -161,6 +164,8 @@ remote func pre_start_game(spawn_points, item_spawn_points, drop_points, team_ch
 
 remote func post_start_game():
 	get_tree().set_pause(false) # Unpause and unleash the game!
+	time_start = OS.get_unix_time()
+	set_process(true)
 
 remote func ready_to_start(id):
 	assert(get_tree().is_network_server())
@@ -225,7 +230,7 @@ func begin_game():
 	
 	# set up the teams
 	# one seeker, everyone else a hider
-	var team_choices = ["seeker"] # start with one seeker always
+	var team_choices = DEFAULT_TEAMS # start with one seeker always
 	for _n in range(spawn_points.size()-1): # size-1 because we already have a seeker
 		team_choices.append("hider") # fill the array with hiders based on how many players are spawning
 	team_choices.shuffle() # randomize the team array
@@ -274,7 +279,13 @@ func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	set_process(false)
 
+
+func _process(delta):
+	# keep track of total game time
+	time_now = OS.get_unix_time()
+	elapsed = time_now - time_start
 
 func _player_gained_item(item_type, player_id):
 	#print("Player: " + str(player_id) + " gained item: " + str(item_type))
@@ -283,15 +294,54 @@ func _player_gained_item(item_type, player_id):
 
 
 func ui_quest_update():
-	print(check_hider_quest())
+	check_game_over()
 	var q = get_tree().get_root().get_node("Level1/UI")
 	q.update_quest_text()
 
 
+func get_all_players():
+	# used for network request
+	var ps = []
+	for p in get_tree().get_root().get_node("Level1/YSort/Players").get_children():
+		ps.append([p.player_name, p.team])
+	return ps
+		
+func send_game_data():
+	var endgamehttp = get_tree().get_root().get_node("LobbySetup/EndgameReport")
+	var gamedata = {
+		"players" : get_all_players(),
+		"duration" : elapsed,
+		"winner" : "samplewinner"
+	}
+	print("Sending over:" + str(gamedata))
+	endgamehttp.request("http://jp00p.com/seekseek/endgame.php", ["Content-type: application/json"], false, HTTPClient.METHOD_POST, JSON.print(gamedata))
+
+
+func check_all_zombies():
+	# returns true if all hiders are zombies
+	var all_players = get_all_players()
+	var zombie_count = 0
+	for p in get_tree().get_root().get_node("Level1/YSort/Players").get_children():
+		if p.is_zombie:
+			zombie_count += 1
+	if zombie_count >= (all_players.size()-1):
+		return true
+	return false
+
 func check_hider_quest():
-	# returns true only if quest is complete
+	# returns true if hider quest is complete
 	var total = 0
 	for i in item_quest:
 		total += int(i[0])
 	return total <= 0
+	
+func check_game_over():
+	if check_hider_quest():
+		game_over("hider")
+	if check_all_zombies():
+		game_over("seeker")
 		
+func game_over(winning_team):
+	get_tree().set_pause(true)
+	var game_over_screen = get_tree().get_root().get_node("Level1/GameOver")
+	game_over_screen.declare_winner(winning_team)

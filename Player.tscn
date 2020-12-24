@@ -145,5 +145,6 @@ shape = SubResource( 9 )
 wait_time = 2.5
 one_shot = true
 [connection signal="timeout" from="StaminaCooldown" to="." method="_on_StaminaCooldown_timeout"]
+[connection signal="body_entered" from="KillRadius" to="." method="_on_KillRadius_body_entered"]
 [connection signal="body_entered" from="ZombieRadius" to="." method="_on_ZombieRadius_body_entered"]
 [connection signal="timeout" from="SlowTimer" to="." method="_on_SlowTimer_timeout"]

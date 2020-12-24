@@ -1,4 +1,4 @@
-[gd_scene load_steps=166 format=2]
+[gd_scene load_steps=167 format=2]
 
 [ext_resource path="res://sprites/rooms/burger-shop-inside.png" type="Texture" id=1]
 [ext_resource path="res://sprites/onett-map.png" type="Texture" id=2]
@@ -55,6 +55,7 @@
 [ext_resource path="res://sprites/rooms/pokey-house.png" type="Texture" id=53]
 [ext_resource path="res://sprites/mask.png" type="Texture" id=54]
 [ext_resource path="res://sprites/xray-power.png" type="Texture" id=55]
+[ext_resource path="res://GameOver.tscn" type="PackedScene" id=56]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 8, 8, 0, 8, 0, 0, 8, 0 )
@@ -1497,7 +1498,7 @@ visible = false
 material = SubResource( 4 )
 position = Vector2( 418.607, -749.533 )
 frames = SubResource( 70 )
-frame = 10
+frame = 20
 playing = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -1533,5 +1534,7 @@ material = SubResource( 72 )
 position = Vector2( 908.388, 557.113 )
 scale = Vector2( 6.78123, 6.78122 )
 frames = SubResource( 110 )
+
+[node name="GameOver" parent="." instance=ExtResource( 56 )]
 [connection signal="timeout" from="NightTimer" to="." method="_on_NightTimer_timeout"]
 [connection signal="timeout" from="XrayTimer" to="." method="_on_XrayTimer_timeout"]
