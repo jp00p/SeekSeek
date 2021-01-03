@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ailment.wav-748f47b89e64e77a3e4867a1c97ccd53.sample"
+
+[deps]
+
+source_file="res://sound/ailment.wav"
+dest_files=[ "res://.import/ailment.wav-748f47b89e64e77a3e4867a1c97ccd53.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

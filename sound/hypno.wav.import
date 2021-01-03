@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/hypno.wav-2d376fb1b804e916952237508b0d048a.sample"
+
+[deps]
+
+source_file="res://sound/hypno.wav"
+dest_files=[ "res://.import/hypno.wav-2d376fb1b804e916952237508b0d048a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

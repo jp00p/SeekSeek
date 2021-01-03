@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://UI.gd" type="Script" id=1]
 [ext_resource path="res://Fonts/statusplz.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://LobbyUI/EB_Panel.tres" type="StyleBox" id=3]
+[ext_resource path="res://sound/text.wav" type="AudioStream" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -53,7 +54,7 @@ __meta__ = {
 [node name="ChatText" type="TextEdit" parent="Chat"]
 margin_right = 354.0
 margin_bottom = 165.0
-rect_min_size = Vector2( 140, 120 )
+rect_min_size = Vector2( 280, 120 )
 size_flags_vertical = 3
 custom_styles/read_only = ExtResource( 3 )
 custom_styles/normal = ExtResource( 3 )
@@ -151,6 +152,10 @@ custom_constants/separation = 16
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="TextSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
 [connection signal="focus_entered" from="Chat/ChatControl/ChatInput" to="." method="_on_ChatInput_focus_entered"]
 [connection signal="focus_exited" from="Chat/ChatControl/ChatInput" to="." method="_on_ChatInput_focus_exited"]
+[connection signal="text_changed" from="Chat/ChatControl/ChatInput" to="." method="_on_ChatInput_text_changed"]
 [connection signal="pressed" from="Chat/ChatControl/ChatSend" to="." method="_on_ChatSend_pressed"]

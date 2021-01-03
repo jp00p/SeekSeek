@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=2]
+[gd_scene load_steps=88 format=2]
 
 [ext_resource path="res://LobbySetup.gd" type="Script" id=1]
 [ext_resource path="res://Characters/character_button_group.tres" type="ButtonGroup" id=2]
@@ -25,8 +25,20 @@
 [ext_resource path="res://sprites/char/punk/punk_front_1.png" type="Texture" id=23]
 [ext_resource path="res://LobbyUI/CharSelected.tres" type="StyleBox" id=24]
 [ext_resource path="res://Fonts/EBMain.ttf" type="DynamicFontData" id=25]
-[ext_resource path="res://sprites/apple.png" type="Texture" id=26]
-[ext_resource path="res://shaders/earthbound-coffee-break.shader" type="Shader" id=27]
+[ext_resource path="res://Background.tscn" type="PackedScene" id=26]
+[ext_resource path="res://Title.tscn" type="PackedScene" id=27]
+[ext_resource path="res://sound/006- Earthbound - Choose a File.ogg" type="AudioStream" id=28]
+[ext_resource path="res://sound/okdesuka.wav" type="AudioStream" id=29]
+[ext_resource path="res://sprites/keys/Shift-Key.png" type="Texture" id=30]
+[ext_resource path="res://sprites/keys/2-Key.png" type="Texture" id=31]
+[ext_resource path="res://sprites/keys/1-Key.png" type="Texture" id=32]
+[ext_resource path="res://sprites/keys/S-Key.png" type="Texture" id=33]
+[ext_resource path="res://sprites/keys/D-Key.png" type="Texture" id=34]
+[ext_resource path="res://sprites/keys/W-Key.png" type="Texture" id=35]
+[ext_resource path="res://sprites/keys/3-Key.png" type="Texture" id=36]
+[ext_resource path="res://sprites/keys/A-Key.png" type="Texture" id=37]
+[ext_resource path="res://sprites/keys/Space-Key.png" type="Texture" id=38]
+[ext_resource path="res://sprites/keys/E-Key.png" type="Texture" id=39]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -37,9 +49,6 @@ font_data = ExtResource( 25 )
 
 [sub_resource type="Theme" id=2]
 default_font = SubResource( 1 )
-
-[sub_resource type="ShaderMaterial" id=17]
-shader = ExtResource( 27 )
 
 [sub_resource type="DynamicFont" id=3]
 size = 34
@@ -59,32 +68,207 @@ font_data = ExtResource( 7 )
 [sub_resource type="Theme" id=6]
 default_font = SubResource( 5 )
 
-[sub_resource type="DynamicFont" id=8]
+[sub_resource type="DynamicFont" id=7]
 size = 24
 font_data = ExtResource( 25 )
 
-[sub_resource type="Theme" id=9]
-default_font = SubResource( 8 )
+[sub_resource type="Theme" id=8]
+default_font = SubResource( 7 )
 
-[sub_resource type="StyleBoxEmpty" id=10]
+[sub_resource type="StyleBoxEmpty" id=9]
 
-[sub_resource type="DynamicFont" id=11]
+[sub_resource type="DynamicFont" id=10]
 size = 42
 extra_spacing_char = 1
 font_data = ExtResource( 7 )
 
-[sub_resource type="Theme" id=12]
-default_font = SubResource( 11 )
+[sub_resource type="Theme" id=11]
+default_font = SubResource( 10 )
 
-[sub_resource type="DynamicFont" id=19]
+[sub_resource type="DynamicFont" id=12]
 size = 32
 font_data = ExtResource( 25 )
 
-[sub_resource type="Theme" id=20]
-default_font = SubResource( 19 )
+[sub_resource type="Theme" id=13]
+default_font = SubResource( 12 )
 
-[sub_resource type="DynamicFont" id=18]
+[sub_resource type="DynamicFont" id=14]
 size = 24
+font_data = ExtResource( 25 )
+
+[sub_resource type="DynamicFont" id=49]
+size = 32
+font_data = ExtResource( 25 )
+
+[sub_resource type="Theme" id=50]
+default_font = SubResource( 49 )
+
+[sub_resource type="DynamicFont" id=47]
+size = 128
+font_data = ExtResource( 25 )
+
+[sub_resource type="AtlasTexture" id=39]
+atlas = ExtResource( 35 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=40]
+atlas = ExtResource( 35 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=41]
+animations = [ {
+"frames": [ SubResource( 39 ), SubResource( 40 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=27]
+atlas = ExtResource( 37 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=28]
+atlas = ExtResource( 37 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=29]
+animations = [ {
+"frames": [ SubResource( 27 ), SubResource( 28 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=33]
+atlas = ExtResource( 33 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=34]
+atlas = ExtResource( 33 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=35]
+animations = [ {
+"frames": [ SubResource( 33 ), SubResource( 34 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=30]
+atlas = ExtResource( 34 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=31]
+atlas = ExtResource( 34 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=32]
+animations = [ {
+"frames": [ SubResource( 30 ), SubResource( 31 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 30 )
+region = Rect2( 0, 0, 48, 32 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 30 )
+region = Rect2( 48, 0, 48, 32 )
+
+[sub_resource type="SpriteFrames" id=17]
+animations = [ {
+"frames": [ SubResource( 15 ), SubResource( 16 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=44]
+atlas = ExtResource( 39 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=45]
+atlas = ExtResource( 39 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=46]
+animations = [ {
+"frames": [ SubResource( 44 ), SubResource( 45 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=42]
+atlas = ExtResource( 38 )
+region = Rect2( 0, 0, 64, 32 )
+
+[sub_resource type="AtlasTexture" id=43]
+atlas = ExtResource( 38 )
+region = Rect2( 64, 0, 64, 32 )
+
+[sub_resource type="SpriteFrames" id=38]
+animations = [ {
+"frames": [ SubResource( 42 ), SubResource( 43 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 32 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 32 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=20]
+animations = [ {
+"frames": [ SubResource( 18 ), SubResource( 19 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 31 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 31 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=23]
+animations = [ {
+"frames": [ SubResource( 21 ), SubResource( 22 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 36 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 36 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=26]
+animations = [ {
+"frames": [ SubResource( 24 ), SubResource( 25 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="DynamicFont" id=48]
+size = 32
 font_data = ExtResource( 25 )
 
 [node name="LobbySetup" type="Control"]
@@ -96,16 +280,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Background" type="TextureRect" parent="."]
-material = SubResource( 17 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-texture = ExtResource( 26 )
-expand = true
-stretch_mode = 7
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="Background" parent="." instance=ExtResource( 26 )]
 
 [node name="Margin" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -222,7 +397,7 @@ __meta__ = {
 [node name="Chars" type="GridContainer" parent="Margin/LobbyContainer/VBoxContainer2/CenterContainer/Panel/MarginContainer/ScrollContainer"]
 margin_right = 681.0
 margin_bottom = 320.0
-theme = SubResource( 9 )
+theme = SubResource( 8 )
 custom_constants/vseparation = 10
 custom_constants/hseparation = 10
 columns = 4
@@ -517,14 +692,13 @@ rect_min_size = Vector2( 0, 340 )
 size_flags_vertical = 3
 custom_styles/tab_fg = ExtResource( 8 )
 custom_styles/tab_bg = ExtResource( 8 )
-custom_styles/panel = SubResource( 10 )
+custom_styles/panel = SubResource( 9 )
 use_hidden_tabs_for_min_size = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Host" type="Control" parent="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 39.0
@@ -751,6 +925,7 @@ __meta__ = {
 }
 
 [node name="Join" type="Control" parent="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 39.0
@@ -849,7 +1024,6 @@ rect_min_size = Vector2( 600, 100 )
 size_flags_horizontal = 4
 custom_styles/bg = ExtResource( 8 )
 items = [ "Test Test Test", null, false, "Test Test Test", null, false ]
-max_columns = 2
 fixed_column_width = 260
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer"]
@@ -898,7 +1072,7 @@ margin_right = 1155.0
 margin_bottom = 417.0
 rect_min_size = Vector2( 420, 25 )
 size_flags_horizontal = 4
-theme = SubResource( 12 )
+theme = SubResource( 11 )
 text = "Sample Error Text!"
 align = 1
 valign = 1
@@ -913,9 +1087,9 @@ margin_bottom = 1065.0
 
 [node name="Players" type="Panel" parent="Margin/PCenter"]
 margin_left = 595.0
-margin_top = 174.0
+margin_top = 175.0
 margin_right = 1295.0
-margin_bottom = 874.0
+margin_bottom = 875.0
 rect_min_size = Vector2( 700, 700 )
 size_flags_horizontal = 5
 size_flags_vertical = 5
@@ -954,7 +1128,7 @@ __meta__ = {
 [node name="PlayersTitle" type="Label" parent="Margin/PCenter/Players/Margin/Vbox"]
 margin_right = 290.0
 margin_bottom = 25.0
-theme = SubResource( 20 )
+theme = SubResource( 13 )
 text = "Players"
 align = 1
 __meta__ = {
@@ -968,7 +1142,7 @@ margin_bottom = 236.0
 rect_min_size = Vector2( 0, 120 )
 size_flags_vertical = 3
 custom_styles/bg = ExtResource( 8 )
-custom_fonts/font = SubResource( 18 )
+custom_fonts/font = SubResource( 14 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 items = [ "Test", null, false, "Tester#2", null, false ]
 __meta__ = {
@@ -996,7 +1170,422 @@ margin_bottom = 56.0
 wait_time = 5.0
 
 [node name="EndgameReport" type="HTTPRequest" parent="."]
+
+[node name="Title" parent="." instance=ExtResource( 27 )]
+visible = false
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 28 )
+autoplay = true
+
+[node name="SFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 29 )
+
+[node name="HelpContainer" type="MarginContainer" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 50 )
+custom_constants/margin_right = 50
+custom_constants/margin_top = 50
+custom_constants/margin_left = 50
+custom_constants/margin_bottom = 50
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HelpVbox" type="VBoxContainer" parent="HelpContainer"]
+margin_left = 50.0
+margin_top = 50.0
+margin_right = 1870.0
+margin_bottom = 1030.0
+custom_constants/separation = 28
+
+[node name="Title" type="Label" parent="HelpContainer/HelpVbox"]
+margin_right = 1820.0
+margin_bottom = 97.0
+custom_fonts/font = SubResource( 47 )
+text = "How to Play"
+align = 1
+
+[node name="GeneralHelp" type="PanelContainer" parent="HelpContainer/HelpVbox"]
+margin_left = 590.0
+margin_top = 125.0
+margin_right = 1230.0
+margin_bottom = 356.0
+rect_min_size = Vector2( 640, 90 )
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_styles/panel = ExtResource( 8 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HelpContainer/HelpVbox/GeneralHelp"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 630.0
+margin_bottom = 221.0
+custom_constants/margin_right = 16
+custom_constants/margin_top = 16
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 604.0
+margin_bottom = 195.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer"]
+margin_right = 588.0
+margin_bottom = 78.0
+rect_min_size = Vector2( 0, 60 )
+size_flags_vertical = 0
+bbcode_enabled = true
+bbcode_text = "[center]The goal of the game changes depending on which team you're on.
+Teams and items are randomized each game![center]"
+text = "The goal of the game changes depending on which team you're on.
+Teams and items are randomized each game!"
+fit_content_height = true
+
+[node name="BasicControls" type="HBoxContainer" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer"]
+margin_top = 82.0
+margin_right = 588.0
+margin_bottom = 179.0
+size_flags_vertical = 0
+custom_constants/separation = 48
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls"]
+margin_left = 148.0
+margin_right = 252.0
+margin_bottom = 97.0
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer"]
+margin_right = 104.0
+margin_bottom = 25.0
+text = "Movement"
+align = 1
+
+[node name="WASD" type="GridContainer" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer"]
+margin_top = 29.0
+margin_right = 104.0
+margin_bottom = 97.0
+rect_min_size = Vector2( 96, 0 )
+size_flags_horizontal = 4
+columns = 3
+
+[node name="Empty" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD"]
+margin_right = 32.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="W" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD"]
+margin_left = 36.0
+margin_right = 68.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="WKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD/W"]
+frames = SubResource( 41 )
+playing = true
+centered = false
+
+[node name="Empty2" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD"]
+margin_left = 72.0
+margin_right = 104.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="A" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD"]
+margin_top = 36.0
+margin_right = 32.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="AKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD/A"]
+frames = SubResource( 29 )
+frame = 1
+playing = true
+centered = false
+
+[node name="S" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD"]
+margin_left = 36.0
+margin_top = 36.0
+margin_right = 68.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="SKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD/S"]
+frames = SubResource( 35 )
+playing = true
+centered = false
+
+[node name="D" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD"]
+margin_left = 72.0
+margin_top = 36.0
+margin_right = 104.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="DKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer/WASD/D"]
+frames = SubResource( 32 )
+playing = true
+centered = false
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls"]
+margin_left = 300.0
+margin_right = 440.0
+margin_bottom = 97.0
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer2"]
+margin_right = 140.0
+margin_bottom = 25.0
+text = "Use shift to Run"
+align = 1
+
+[node name="Shift" type="Control" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer2"]
+margin_top = 29.0
+margin_right = 140.0
+margin_bottom = 93.0
+rect_min_size = Vector2( 48, 64 )
+
+[node name="ShiftKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/GeneralHelp/MarginContainer/VBoxContainer/BasicControls/VBoxContainer2/Shift"]
+frames = SubResource( 17 )
+playing = true
+centered = false
+offset = Vector2( 32, 16 )
+
+[node name="TeamHelp" type="HBoxContainer" parent="HelpContainer/HelpVbox"]
+margin_top = 384.0
+margin_right = 1820.0
+margin_bottom = 827.0
+custom_constants/separation = 100
+alignment = 1
+
+[node name="HiderPanel" type="PanelContainer" parent="HelpContainer/HelpVbox/TeamHelp"]
+margin_left = 452.0
+margin_right = 844.0
+margin_bottom = 443.0
+rect_min_size = Vector2( 392, 0 )
+custom_styles/panel = ExtResource( 8 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 382.0
+margin_bottom = 433.0
+custom_constants/margin_right = 16
+custom_constants/margin_top = 16
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 356.0
+margin_bottom = 407.0
+custom_constants/separation = 24
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer/VBoxContainer"]
+margin_right = 340.0
+margin_bottom = 25.0
+text = "Hiding Team"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer/VBoxContainer"]
+margin_top = 49.0
+margin_right = 340.0
+margin_bottom = 81.0
+custom_constants/separation = 8
+alignment = 1
+
+[node name="E" type="Control" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 73.0
+margin_right = 105.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="EKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer/VBoxContainer/HBoxContainer/E"]
+frames = SubResource( 46 )
+frame = 1
+playing = true
+centered = false
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 113.0
+margin_top = 3.0
+margin_right = 267.0
+margin_bottom = 28.0
+text = "Pick up/drop item"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="HelpContainer/HelpVbox/TeamHelp/HiderPanel/MarginContainer/VBoxContainer"]
+margin_top = 105.0
+margin_right = 340.0
+margin_bottom = 391.0
+bbcode_enabled = true
+bbcode_text = "Your goals:
+ - Find the items listed in your quest
+ - Bring the items to statues hidden in different buildings
+ - Avoid becoming a zombie
+
+Zombies can still complete quest objectives.
+
+You win when all quest items have been dropped off!"
+text = "Your goals:
+ - Find the items listed in your quest
+ - Bring the items to statues hidden in different buildings
+ - Avoid becoming a zombie
+
+Zombies can still complete quest objectives.
+
+You win when all quest items have been dropped off!"
+fit_content_height = true
+
+[node name="SeekerPanel" type="PanelContainer" parent="HelpContainer/HelpVbox/TeamHelp"]
+margin_left = 944.0
+margin_right = 1368.0
+margin_bottom = 443.0
+rect_min_size = Vector2( 320, 0 )
+custom_styles/panel = ExtResource( 8 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 414.0
+margin_bottom = 433.0
+custom_constants/margin_right = 16
+custom_constants/margin_top = 16
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 388.0
+margin_bottom = 407.0
+custom_constants/separation = 24
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2"]
+margin_right = 372.0
+margin_bottom = 25.0
+text = "Seeking Team"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2"]
+margin_top = 49.0
+margin_right = 372.0
+margin_bottom = 101.0
+bbcode_enabled = true
+bbcode_text = "Your only goal is to find the hiders and turn them all into zombies!"
+text = "Your only goal is to find the hiders and turn them all into zombies!"
+fit_content_height = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2"]
+margin_top = 125.0
+margin_right = 372.0
+margin_bottom = 178.0
+custom_constants/separation = 8
+alignment = 1
+
+[node name="Space" type="Control" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 53.0
+rect_min_size = Vector2( 64, 32 )
+
+[node name="SpaceKey" type="AnimatedSprite" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer/Space"]
+frames = SubResource( 38 )
+frame = 1
+playing = true
+centered = false
+
+[node name="1" type="Control" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer"]
+margin_left = 72.0
+margin_right = 104.0
+margin_bottom = 53.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="1Key" type="AnimatedSprite" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer/1"]
+frames = SubResource( 20 )
+playing = true
+centered = false
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer"]
+margin_left = 112.0
+margin_right = 372.0
+margin_bottom = 53.0
+rect_min_size = Vector2( 260, 0 )
+text = "Turn a hider you are touching into a zombie"
+autowrap = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2"]
+margin_top = 202.0
+margin_right = 372.0
+margin_bottom = 255.0
+custom_constants/separation = 8
+alignment = 1
+
+[node name="2" type="Control" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer2"]
+margin_left = 36.0
+margin_right = 68.0
+margin_bottom = 53.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="2Key" type="AnimatedSprite" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer2/2"]
+frames = SubResource( 23 )
+frame = 1
+playing = true
+centered = false
+
+[node name="Label" type="Label" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer2"]
+margin_left = 76.0
+margin_right = 336.0
+margin_bottom = 53.0
+rect_min_size = Vector2( 260, 0 )
+text = "Use X-Ray vision to see through buildings and trees"
+autowrap = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2"]
+margin_top = 279.0
+margin_right = 372.0
+margin_bottom = 360.0
+custom_constants/separation = 8
+alignment = 1
+
+[node name="3" type="Control" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer3"]
+margin_left = 36.0
+margin_right = 68.0
+margin_bottom = 81.0
+rect_min_size = Vector2( 32, 32 )
+
+[node name="3Key" type="AnimatedSprite" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer3/3"]
+frames = SubResource( 26 )
+playing = true
+centered = false
+
+[node name="Label2" type="Label" parent="HelpContainer/HelpVbox/TeamHelp/SeekerPanel/MarginContainer/VBoxContainer2/HBoxContainer3"]
+margin_left = 76.0
+margin_right = 336.0
+margin_bottom = 81.0
+rect_min_size = Vector2( 260, 0 )
+text = "Change the world to night, forcing hiders to turn on their flashlights"
+autowrap = true
+
+[node name="CloseHelp" type="Button" parent="HelpContainer/HelpVbox"]
+margin_left = 857.0
+margin_top = 855.0
+margin_right = 963.0
+margin_bottom = 900.0
+size_flags_horizontal = 4
+custom_styles/normal = ExtResource( 8 )
+custom_fonts/font = SubResource( 48 )
+text = "I'm ready!"
 [connection signal="text_changed" from="Margin/LobbyContainer/Name/HBoxContainer/NameEdit" to="." method="_on_NameEdit_text_changed"]
+[connection signal="pressed" from="Margin/LobbyContainer/Name/HBoxContainer/RandomName" to="." method="_on_RandomName_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/VBoxContainer2/CenterContainer/Panel/MarginContainer/ScrollContainer/Chars/Pokey" to="." method="_on_Pokey_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/VBoxContainer2/CenterContainer/Panel/MarginContainer/ScrollContainer/Chars/Pizzagirl" to="." method="_on_Pizzagirl_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/VBoxContainer2/CenterContainer/Panel/MarginContainer/ScrollContainer/Chars/MrSaturn" to="." method="_on_MrSaturn_pressed"]
@@ -1025,6 +1614,8 @@ wait_time = 5.0
 [connection signal="text_changed" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Host/Center/VBoxContainer/HBoxContainer/VBoxContainer/ZombieSpeedContainer/ZombieSpeed" to="." method="_on_DropzoneCount_text_changed"]
 [connection signal="pressed" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Host/Center/VBoxContainer/HostButton" to="." method="_on_HostButton_pressed"]
 [connection signal="pressed" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/ipwrap/IpBox/Refresh" to="." method="_on_Refresh_pressed"]
+[connection signal="focus_entered" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/ListOfGames" to="." method="_on_ListOfGames_focus_entered"]
+[connection signal="focus_exited" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/ListOfGames" to="." method="_on_ListOfGames_focus_exited"]
 [connection signal="item_selected" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/ListOfGames" to="." method="_on_ListOfGames_item_selected"]
 [connection signal="text_changed" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/HBoxContainer/Password" to="." method="_on_Password_text_changed"]
 [connection signal="pressed" from="Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer/Join/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/JoinButton" to="." method="_on_JoinButton_pressed"]
@@ -1033,3 +1624,6 @@ wait_time = 5.0
 [connection signal="request_completed" from="GetGameData" to="." method="_on_GetGameData_request_completed"]
 [connection signal="timeout" from="GetGameData/GameListPing" to="." method="_on_GameListPing_timeout"]
 [connection signal="request_completed" from="EndgameReport" to="." method="_on_EndgameReport_request_completed"]
+[connection signal="show_help" from="Title" to="." method="_on_Title_show_help"]
+[connection signal="title_start" from="Title" to="." method="_on_Title_title_start"]
+[connection signal="pressed" from="HelpContainer/HelpVbox/CloseHelp" to="." method="_on_CloseHelp_pressed"]

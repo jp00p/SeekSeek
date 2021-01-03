@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/021- Earthbound - Sunrise & Onett Theme.ogg-177d0bb648c341f862d03d9a9bf5ec67.oggstr"
+
+[deps]
+
+source_file="res://sound/021- Earthbound - Sunrise & Onett Theme.ogg"
+dest_files=[ "res://.import/021- Earthbound - Sunrise & Onett Theme.ogg-177d0bb648c341f862d03d9a9bf5ec67.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

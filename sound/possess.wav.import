@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/possess.wav-39724bdb3e319cc997ff8af875a5eaa1.sample"
+
+[deps]
+
+source_file="res://sound/possess.wav"
+dest_files=[ "res://.import/possess.wav-39724bdb3e319cc997ff8af875a5eaa1.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

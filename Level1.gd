@@ -24,6 +24,11 @@ func _ready():
 	Engine.set_target_fps(Engine.get_iterations_per_second()) # this cleans up camera smoothing (but why?!)
 	$TileMap.set_visible(false)
 	$MaskLayer/Mask.modulate.a = 0
+	
+	yield(get_tree().create_timer(6.5), "timeout") # wait for music
+	$MaskLayer/CenterContainer.queue_free()
+	get_node("UI/Chat").set_visible(true)
+	
 		
 func set_night():
 	# setup nighttime power 

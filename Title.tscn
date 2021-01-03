@@ -1,0 +1,139 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Fonts/onett.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Fonts/year_is_199x.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Fonts/EBMain.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://LobbyUI/EB_Panel.tres" type="StyleBox" id=4]
+[ext_resource path="res://Title.gd" type="Script" id=5]
+[ext_resource path="res://sound/wow.wav" type="AudioStream" id=6]
+
+[sub_resource type="Shader" id=1]
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 196
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=4]
+default_font = SubResource( 3 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 128
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+use_filter = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=6]
+default_font = SubResource( 5 )
+
+[sub_resource type="DynamicFont" id=10]
+size = 64
+font_data = ExtResource( 3 )
+
+[sub_resource type="Theme" id=11]
+default_font = SubResource( 10 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 48
+font_data = ExtResource( 3 )
+
+[sub_resource type="Theme" id=8]
+default_font = SubResource( 7 )
+
+[sub_resource type="Animation" id=9]
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.535887, 8.87655 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1e-05, 1e-05 ) ]
+}
+
+[node name="Title" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+margin_top = 283.0
+margin_right = 1920.0
+margin_bottom = 796.0
+rect_pivot_offset = Vector2( 960, 209 )
+custom_constants/separation = 48
+alignment = 1
+
+[node name="Label" type="RichTextLabel" parent="CenterContainer/VBoxContainer"]
+material = SubResource( 2 )
+margin_right = 1920.0
+margin_bottom = 198.0
+rect_min_size = Vector2( 1920, 0 )
+size_flags_horizontal = 3
+theme = SubResource( 4 )
+bbcode_enabled = true
+bbcode_text = "[center][rainbow]SeekSeek[/rainbow][/center]"
+text = "SeekSeek"
+fit_content_height = true
+
+[node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
+margin_top = 246.0
+margin_right = 1920.0
+margin_bottom = 314.0
+theme = SubResource( 6 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "A hide and seek adventure"
+align = 1
+
+[node name="HBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+margin_top = 362.0
+margin_right = 1920.0
+margin_bottom = 513.0
+custom_constants/separation = 25
+alignment = 1
+
+[node name="Start" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+margin_left = 900.0
+margin_right = 1020.0
+margin_bottom = 69.0
+rect_min_size = Vector2( 120, 57 )
+size_flags_horizontal = 4
+theme = SubResource( 11 )
+custom_styles/normal = ExtResource( 4 )
+text = "Start"
+
+[node name="Help" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+margin_left = 872.0
+margin_top = 94.0
+margin_right = 1048.0
+margin_bottom = 151.0
+rect_min_size = Vector2( 120, 57 )
+size_flags_horizontal = 4
+theme = SubResource( 8 )
+custom_styles/normal = ExtResource( 4 )
+text = "How to Play"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CenterContainer/VBoxContainer"]
+anims/intro = SubResource( 9 )
+
+[node name="WOW" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/Start" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/Help" to="." method="_on_Help_pressed"]

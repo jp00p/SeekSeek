@@ -4,6 +4,7 @@ onready var chat_display = $Chat/ChatText
 var chat_visible = false
 
 func _ready():
+	$Chat.set_visible(false)
 	var player = get_tree().get_root().get_node("Level1/YSort/Players/"+str(get_tree().get_network_unique_id()))
 	chat_display.text = ""
 	$Chat.modulate.a = 0.75
@@ -49,7 +50,7 @@ func update_quest_text():
 		$QPanel/QMargin/Quests.add_child(lab)
 
 func _on_ChatSend_pressed():
-	$Chat/ChatControl/ChatInput.set_focus(false)
+	#$Chat/ChatControl/ChatInput.set_focus(false)
 	var msg = $Chat/ChatControl/ChatInput.text
 	if msg != "":
 		$Chat/ChatControl/ChatInput.text = ""
@@ -89,3 +90,7 @@ func _input(event):
 		else:
 			#$Chat/AnimationPlayer.play("show_chat")
 			chat_visible = true
+
+
+func _on_ChatInput_text_changed(new_text):
+	$TextSound.play()

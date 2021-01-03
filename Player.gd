@@ -2,21 +2,20 @@ extends KinematicBody2D
 
 # moving after being tagged???
 # game doesn't fully restart
-
 # turn to zombie?!
 
 signal player_gained_item(item_type, player_id)
 
 var is_zombie = false
 
-var can_move = true
+var can_move = false
 var can_run = true
 
 var speed = 0
 var hider_walk_speed = 125
 var hider_run_speed = 175
 
-var seeker_walk_speed = 120
+var seeker_walk_speed = 115
 var seeker_run_speed = 185
 
 var zombie_walk_speed = 50
@@ -35,12 +34,15 @@ var carried_item = ""
 var throw_distance = 22
 var throw_dir = Vector2()
 
+var step_size = 12.0
+
 var velocity = Vector2()
 var frames = Globals.character_graphics["pokey"]
-var direction
+var direction = "down"
 
 var player_name
-var close_calls
+var close_calls = 0
+var steps = 0.0
 
 var cam_scale_normal = Vector2(0.25, 0.25)
 var cam_scale_running = Vector2(0.2, 0.2)
@@ -67,9 +69,13 @@ func _ready():
 		
 	if team == "seeker":
 		$SeekerTrail.set_visible(true)
+		
+	yield(get_tree().create_timer(6.5), "timeout")
+	can_move = true
 
 
 func _physics_process(delta):
+	
 	var t = delta
 	
 	if is_network_master():
@@ -79,7 +85,8 @@ func _physics_process(delta):
 			$Camera2D.zoom = $Camera2D.zoom.linear_interpolate(cam_scale_running, t)
 		else:
 			$Camera2D.zoom = $Camera2D.zoom.linear_interpolate(cam_scale_normal, t)
-		
+		if velocity != Vector2.ZERO:
+			steps += 1.0
 		velocity = move_and_slide(velocity)
 		$RayCast2D.cast_to = throw_dir
 
@@ -129,7 +136,7 @@ func get_input():
 		return
 	
 	if team == "seeker" and (Input.is_action_just_pressed('hotkey1') or Input.is_action_just_pressed("ui_select")):
-		gamestate.send_game_data()
+		gamestate.check_game_over()
 		if Globals.seeker_skills[0].cooldown_active:
 			return
 		try_kill()

@@ -65,6 +65,7 @@ draw_order = 1
 process_material = SubResource( 4 )
 
 [node name="PlayerName" type="Label" parent="."]
+visible = false
 light_mask = 2
 margin_left = -48.9672
 margin_top = -48.26
@@ -88,7 +89,6 @@ smoothing_speed = 4.0
 material = SubResource( 6 )
 frames = ExtResource( 2 )
 animation = "back"
-frame = 1
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

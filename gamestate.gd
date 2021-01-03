@@ -32,7 +32,6 @@ var player_team
 var players = {}
 var players_ready = []
 
-
 var time_start = 0
 var time_now = 0
 var elapsed = 0
@@ -83,7 +82,7 @@ func unregister_player(id):
 	players.erase(id)
 	emit_signal("player_list_changed")
 
-remote func pre_start_game(spawn_points, item_spawn_points, drop_points, team_choices):
+remote func pre_start_game(spawn_points, item_spawn_points, drop_points, tc):
 	# could let the host choose a level... 
 	# but for now most of the game is dependent on being in Level1
 	var world = load("res://Level1.tscn").instance()
@@ -98,7 +97,7 @@ remote func pre_start_game(spawn_points, item_spawn_points, drop_points, team_ch
 
 	# prep the player
 	var player_scene = load("res://Player.tscn")
-	
+	var temp_team_choices = tc
 	for p_id in spawn_points:
 		# spawn the players in random spots!
 		var spawn_pos = world.get_node("SpawnPoints/" + str(spawn_points[p_id])).position  # warning: we need a spawn point for each player!
@@ -113,15 +112,15 @@ remote func pre_start_game(spawn_points, item_spawn_points, drop_points, team_ch
 			# handle setting network master info (you)
 			player.set_player_name(player_name)
 			player.set_player_frames(player_char)
-			player.set_player_team(team_choices[0])
+			player.set_player_team(temp_team_choices[0])
 		else:
 			#print("Setting " + str(p_id) + " to " + str(team_choices[0]))
 			# handle setting other players (not you)
 			player.set_player_name(players[p_id].name)
 			player.set_player_frames(players[p_id].character)
-			player.set_player_team(team_choices[0])
+			player.set_player_team(temp_team_choices[0])
 			
-		team_choices.pop_front()
+		temp_team_choices.pop_front()
 		
 		# add to Level1 Ysort node (this is brittle)
 		world.get_node("YSort/Players").add_child(player)
@@ -206,6 +205,7 @@ func get_player_name():
 func begin_game():
 	assert(get_tree().is_network_server()) # ONLY HOST
 	
+	
 	# create item quest for seekers
 	item_quest = Globals.create_item_quest(game_item_count,game_item_types)
 	rset("item_quest", item_quest)
@@ -230,7 +230,7 @@ func begin_game():
 	
 	# set up the teams
 	# one seeker, everyone else a hider
-	var team_choices = DEFAULT_TEAMS # start with one seeker always
+	var team_choices = DEFAULT_TEAMS.duplicate() # start with one seeker always
 	for _n in range(spawn_points.size()-1): # size-1 because we already have a seeker
 		team_choices.append("hider") # fill the array with hiders based on how many players are spawning
 	team_choices.shuffle() # randomize the team array
@@ -297,21 +297,23 @@ func ui_quest_update():
 	check_game_over()
 	var q = get_tree().get_root().get_node("Level1/UI")
 	q.update_quest_text()
+	var s = get_tree().get_root().get_node("Level1/ItemGetSound")
+	s.play()
 
 
 func get_all_players():
 	# used for network request
 	var ps = []
 	for p in get_tree().get_root().get_node("Level1/YSort/Players").get_children():
-		ps.append([p.player_name, p.team])
+		ps.append([p.player_name, p.team, p.steps])
 	return ps
 		
-func send_game_data():
+master func send_game_data(winner):
 	var endgamehttp = get_tree().get_root().get_node("LobbySetup/EndgameReport")
 	var gamedata = {
 		"players" : get_all_players(),
 		"duration" : elapsed,
-		"winner" : "samplewinner"
+		"winner" : winner
 	}
 	print("Sending over:" + str(gamedata))
 	endgamehttp.request("http://jp00p.com/seekseek/endgame.php", ["Content-type: application/json"], false, HTTPClient.METHOD_POST, JSON.print(gamedata))
@@ -335,13 +337,22 @@ func check_hider_quest():
 		total += int(i[0])
 	return total <= 0
 	
-func check_game_over():
+master func check_game_over():
+	# check if the game is over
+	print("Checking game state...")
 	if check_hider_quest():
-		game_over("hider")
+		rpc("game_over", "hider")
+		send_game_data("hider")
 	if check_all_zombies():
-		game_over("seeker")
+		rpc("game_over", "seeker")
+		send_game_data("seeker")
 		
-func game_over(winning_team):
-	get_tree().set_pause(true)
-	var game_over_screen = get_tree().get_root().get_node("Level1/GameOver")
+remotesync func game_over(winning_team):
+	#get_tree().set_pause(true)
+	print("Triggering game over")
+	for p in get_tree().get_root().get_node("Level1/YSort/Players").get_children():
+		p.can_move = false
+	#get_tree().get_root().get_node("Level1/UI").queue_free()
+	var game_over_screen = load("res://GameOver.tscn").instance()
+	get_tree().get_root().get_node("Level1").add_child(game_over_screen)
 	game_over_screen.declare_winner(winning_team)

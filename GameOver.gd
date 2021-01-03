@@ -15,3 +15,9 @@ func _ready():
 func declare_winner(winning_team):
 	$Control.set_visible(true)
 	$Control/VBoxContainer/Winner.text = str(winning_team) + " wins!"
+
+func _on_MainMenuButton_pressed():
+	get_tree().reload_current_scene()
+	print("Game over man")
+	gamestate.end_game()
+	queue_free()
