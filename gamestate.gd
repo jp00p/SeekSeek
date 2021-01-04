@@ -42,6 +42,12 @@ signal connection_succeeded()
 signal game_ended()
 signal game_error(what)
 
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_FOCUS_IN:
+		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), false)
+	elif what == MainLoop.NOTIFICATION_WM_FOCUS_OUT:
+		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), true)
+
 # Callback from SceneTree.
 func _player_connected(id):
 	# Registration of a client beings here, tell the connected player that we are here.
@@ -354,5 +360,11 @@ remotesync func game_over(winning_team):
 		p.can_move = false
 	#get_tree().get_root().get_node("Level1/UI").queue_free()
 	var game_over_screen = load("res://GameOver.tscn").instance()
+	get_tree().get_root().get_node("Level1/BGM").stop()
+	get_tree().get_root().get_node("Level1/NightMusic").stop()
+	if winning_team == "seeker":
+		get_tree().get_root().get_node("Level1/SeekerWins").play()
+	else:
+		get_tree().get_root().get_node("Level1/HiderWins").play()
 	get_tree().get_root().get_node("Level1").add_child(game_over_screen)
 	game_over_screen.declare_winner(winning_team)

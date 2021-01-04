@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/016- Earthbound - Pokey.ogg-5a2b03603c84dadd8e08c1b1459a4bd2.oggstr"
+
+[deps]
+
+source_file="res://sound/016- Earthbound - Pokey.ogg"
+dest_files=[ "res://.import/016- Earthbound - Pokey.ogg-5a2b03603c84dadd8e08c1b1459a4bd2.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

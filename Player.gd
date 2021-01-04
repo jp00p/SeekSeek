@@ -120,6 +120,7 @@ func try_kill():
 sync func kill_player(p_id):
 	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(p_id))
 	p.become_zombie()
+	$PlayerDeathSound.play()
 
 # when a hider dies, they become a zombie
 func become_zombie():
@@ -136,7 +137,6 @@ func get_input():
 		return
 	
 	if team == "seeker" and (Input.is_action_just_pressed('hotkey1') or Input.is_action_just_pressed("ui_select")):
-		gamestate.check_game_over()
 		if Globals.seeker_skills[0].cooldown_active:
 			return
 		try_kill()

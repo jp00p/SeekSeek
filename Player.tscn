@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://Characters/venus.tres" type="SpriteFrames" id=2]
 [ext_resource path="res://sprites/light_01.png" type="Texture" id=3]
 [ext_resource path="res://Fonts/statusplz.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://sound/possess.wav" type="AudioStream" id=5]
 
 [sub_resource type="CanvasItemMaterial" id=1]
 render_priority = 1
@@ -144,6 +145,9 @@ shape = SubResource( 9 )
 [node name="SlowTimer" type="Timer" parent="."]
 wait_time = 2.5
 one_shot = true
+
+[node name="PlayerDeathSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
 [connection signal="timeout" from="StaminaCooldown" to="." method="_on_StaminaCooldown_timeout"]
 [connection signal="body_entered" from="KillRadius" to="." method="_on_KillRadius_body_entered"]
 [connection signal="body_entered" from="ZombieRadius" to="." method="_on_ZombieRadius_body_entered"]

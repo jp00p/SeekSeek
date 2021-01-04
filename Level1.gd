@@ -44,12 +44,15 @@ func set_xray():
 remotesync func xray_blast():
 	# show the xray animation to everyone
 	$MaskLayer/XrayBlast.play()
+	$XRaySound.play()
 
 remotesync func nighttime():
 	# show the nighttime stuff for everyone
 	is_night = true
 	$AnimationPlayer.play("nighttime")
 	$NightTimer.start()
+	$BGM.set_stream_paused(true)
+	$NightMusic.play()
 	for p in $YSort/Players.get_children():
 		if p.team != "seeker":
 			p.set_flashlight(true)
@@ -63,6 +66,8 @@ master func xray():
 func _on_NightTimer_timeout():
 	# end the night effect
 	is_night = false
+	$NightMusic.stop()
+	$BGM.set_stream_paused(false)
 	for p in $YSort/Players.get_children():
 		p.set_flashlight(false)
 	$AnimationPlayer.play_backwards("nighttime")

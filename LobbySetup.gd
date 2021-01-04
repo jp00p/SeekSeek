@@ -11,6 +11,8 @@ onready var lobby_container = $Margin/LobbyContainer
 onready var lobby_player_list = $Margin/PCenter
 onready var lock_icon = load("res://sprites/lock.png")
 
+const GAME_VERSION = "BETA"
+
 var pname = "" # nickname placeholder
 var game_name = ""
 var game_password = ""
@@ -39,6 +41,7 @@ func _ready():
 	print("Max dropzones: " + str(max_dropzones))
 	$Margin.set_visible(false)
 	$Title.set_visible(true)
+	$Margin/PCenter/Players/Margin/Vbox/StartGame.set_disabled(true)
 	gamestate.connect("connection_failed", self, "_on_connection_failed")
 	gamestate.connect("connection_succeeded", self, "_on_connection_success")
 	gamestate.connect("player_list_changed", self, "refresh_lobby")
@@ -98,7 +101,7 @@ func _on_HostButton_pressed():
 
 func send_game_data(player_name):
 	#print("Pinging jp00p.com with gamedata...")
-	var request_url = str("http://jp00p.com/seekseek/host.php?name={name}&game_name={game_name}&password={password}").format({ "name" : player_name, "game_name": game_name, "password" : game_password })
+	var request_url = str("http://jp00p.com/seekseek/host.php?name={name}&game_name={game_name}&password={password}&version={game_version}").format({ "name" : player_name, "game_name": game_name, "password" : game_password, "game_version" : GAME_VERSION })
 	$SendHostData.request(request_url)
 
 func _on_Ping_timeout():
@@ -154,13 +157,16 @@ func _on_game_error(msg):
 # update list of players ready to start
 func refresh_lobby():
 	var players = gamestate.get_player_list()
+	print(players.size())
+	
 	players.sort()
 	player_list.clear()
 	player_list.add_item(gamestate.get_player_name() + " (You)")
 	for p in players:
 		player_list.add_item(p.name)
 	
-	$Margin/PCenter/Players/Margin/Vbox/StartGame.disabled = not get_tree().is_network_server()	
+	if get_tree().is_network_server() and players.size() >= 1:
+		$Margin/PCenter/Players/Margin/Vbox/StartGame.set_disabled(false)
 
 func _start_game():
 	$SendHostData/Ping.stop()
@@ -268,7 +274,7 @@ func get_game_list():
 	print("Loading list of lobbies...")
 	refresh_button.set_disabled(true)
 	game_list.clear()
-	$GetGameData.request("http://jp00p.com/seekseek/get_list.php")
+	$GetGameData.request("http://jp00p.com/seekseek/get_list.php?version="+str(GAME_VERSION))
 
 # when player chooses to join a game, load up the game list and refresh intervals
 func _on_TabContainer_tab_changed(tab):

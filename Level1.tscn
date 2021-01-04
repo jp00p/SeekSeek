@@ -1,4 +1,4 @@
-[gd_scene load_steps=185 format=2]
+[gd_scene load_steps=189 format=2]
 
 [ext_resource path="res://sprites/rooms/burger-shop-inside.png" type="Texture" id=1]
 [ext_resource path="res://sprites/onett-bg.png" type="Texture" id=2]
@@ -71,6 +71,10 @@
 [ext_resource path="res://sound/itemget1.wav" type="AudioStream" id=69]
 [ext_resource path="res://sound/021- Earthbound - Sunrise & Onett Theme.ogg" type="AudioStream" id=70]
 [ext_resource path="res://Fonts/EBMain.ttf" type="DynamicFontData" id=71]
+[ext_resource path="res://sound/ailment.wav" type="AudioStream" id=72]
+[ext_resource path="res://sound/009- Earthbound - One Fateful Night___.ogg" type="AudioStream" id=73]
+[ext_resource path="res://sound/016- Earthbound - Pokey.ogg" type="AudioStream" id=74]
+[ext_resource path="res://sound/022- Earthbound - What a Great Picture!.ogg" type="AudioStream" id=75]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 8, 8, 0, 8, 0, 0, 8, 0 )
@@ -605,6 +609,9 @@ animations = [ {
 
 [sub_resource type="DynamicFont" id=112]
 size = 128
+outline_size = 4
+outline_color = Color( 0, 0, 0, 1 )
+use_filter = true
 font_data = ExtResource( 71 )
 
 [sub_resource type="Theme" id=113]
@@ -2133,7 +2140,7 @@ visible = false
 material = SubResource( 4 )
 position = Vector2( 418.607, -749.533 )
 frames = SubResource( 70 )
-frame = 1
+frame = 63
 playing = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -2203,5 +2210,17 @@ autoplay = true
 
 [node name="ItemGetSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 69 )
+
+[node name="XRaySound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 72 )
+
+[node name="NightMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 73 )
+
+[node name="SeekerWins" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 74 )
+
+[node name="HiderWins" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 75 )
 [connection signal="timeout" from="NightTimer" to="." method="_on_NightTimer_timeout"]
 [connection signal="timeout" from="XrayTimer" to="." method="_on_XrayTimer_timeout"]

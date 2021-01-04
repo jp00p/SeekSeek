@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/035- Earthbound - You Win!.ogg-ec01a3136bb0f686e2047924bfc97a44.oggstr"
+
+[deps]
+
+source_file="res://sound/035- Earthbound - You Win!.ogg"
+dest_files=[ "res://.import/035- Earthbound - You Win!.ogg-ec01a3136bb0f686e2047924bfc97a44.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
