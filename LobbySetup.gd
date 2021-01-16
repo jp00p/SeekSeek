@@ -11,7 +11,6 @@ onready var lobby_container = $Margin/LobbyContainer
 onready var lobby_player_list = $Margin/PCenter
 onready var lock_icon = load("res://sprites/lock.png")
 
-const GAME_VERSION = "BETA"
 
 var pname = "" # nickname placeholder
 var game_name = ""
@@ -21,7 +20,7 @@ var current_game_password = ""
 var character = "pokey" # character selection
 var item_types = 3
 var item_count = 3
-var dropzone_count = 3
+var dropzone_count = 10
 var max_items
 var max_dropzones
 var active_game_list
@@ -34,11 +33,12 @@ var random_player_name_parts = ["Aloysius", "Orange", "Andonuts", "Saturn", "Mon
 func _ready():
 	randomize()
 	var level1 = load("res://Level1.tscn").instance()
+	$Margin/LobbyContainer/VBoxContainer/TabPanel/TabMargin/TabContainer.set_current_tab(1);
 	max_items = level1.get_node("YSort/PickupSpawns").get_child_count()
 	max_dropzones = level1.get_node("DropzoneSpawns").get_child_count()
 	level1.queue_free()
-	print("Max items: " + str(max_items))
-	print("Max dropzones: " + str(max_dropzones))
+	#print("Max items: " + str(max_items))
+	#print("Max dropzones: " + str(max_dropzones))
 	$Margin.set_visible(false)
 	$Title.set_visible(true)
 	$Margin/PCenter/Players/Margin/Vbox/StartGame.set_disabled(true)
@@ -95,13 +95,14 @@ func _on_HostButton_pressed():
 	# make http request to lobby server
 	send_game_data(pname)
 	$SendHostData/Ping.start()
+	$GetGameData/GameListPing.stop()
 	error_text.text = ""
 	gamestate.host_game(pname, character, int(item_types), int(item_count), int(dropzone_count))
 	refresh_lobby()
 
 func send_game_data(player_name):
 	#print("Pinging jp00p.com with gamedata...")
-	var request_url = str("http://jp00p.com/seekseek/host.php?name={name}&game_name={game_name}&password={password}&version={game_version}").format({ "name" : player_name, "game_name": game_name, "password" : game_password, "game_version" : GAME_VERSION })
+	var request_url = str("http://jp00p.com/seekseek/host.php?name={name}&game_name={game_name}&password={password}&version={game_version}").format({ "name" : player_name, "game_name": game_name, "password" : game_password, "game_version" : gamestate.GAME_VERSION })
 	$SendHostData.request(request_url)
 
 func _on_Ping_timeout():
@@ -145,8 +146,10 @@ func _on_connection_failed():
 # game is completely over, soft restart
 func _on_game_ended():
 	show()
+	_set_buttons_disabled(false)
 	lobby_container.show()
 	lobby_player_list.hide()
+	$GetGameData/GameListPing.start()
 	
 # when a breaking game error happens	
 func _on_game_error(msg):
@@ -155,16 +158,14 @@ func _on_game_error(msg):
 	_set_buttons_disabled(false)
 
 # update list of players ready to start
-func refresh_lobby():
+remotesync func refresh_lobby():
 	var players = gamestate.get_player_list()
-	print(players.size())
-	
+	$Margin/PCenter/Players/Margin/Vbox/StartGame.set_disabled(true)
 	players.sort()
 	player_list.clear()
 	player_list.add_item(gamestate.get_player_name() + " (You)")
 	for p in players:
 		player_list.add_item(p.name)
-	
 	if get_tree().is_network_server() and players.size() >= 1:
 		$Margin/PCenter/Players/Margin/Vbox/StartGame.set_disabled(false)
 
@@ -274,7 +275,7 @@ func get_game_list():
 	print("Loading list of lobbies...")
 	refresh_button.set_disabled(true)
 	game_list.clear()
-	$GetGameData.request("http://jp00p.com/seekseek/get_list.php?version="+str(GAME_VERSION))
+	$GetGameData.request("http://jp00p.com/seekseek/get_list.php?version="+str(gamestate.GAME_VERSION))
 
 # when player chooses to join a game, load up the game list and refresh intervals
 func _on_TabContainer_tab_changed(tab):
@@ -356,3 +357,15 @@ func _on_Title_show_help():
 func _on_CloseHelp_pressed():
 	$HelpContainer.set_visible(false)
 	$Title.set_visible(true)
+
+func _on_Back_pressed():
+	gamestate.player_left_lobby(get_tree().get_network_unique_id())
+	rpc("refresh_lobby")
+	_set_buttons_disabled(false)
+	$SendHostData/Ping.stop()
+	lobby_container.show()
+	lobby_player_list.hide()
+
+func _on_MuteButton_toggled(button_pressed):
+	Globals.sound_muted = button_pressed
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), Globals.sound_muted)

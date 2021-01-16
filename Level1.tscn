@@ -423,30 +423,6 @@ tracks/1/keys = {
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
-tracks/2/type = "value"
-tracks/2/path = NodePath("MaskLayer/Mask:rect_size")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Vector2( 1024, 0 ), Vector2( 1024, 600 ) ]
-}
-tracks/3/type = "value"
-tracks/3/path = NodePath("MaskLayer/Mask:rect_position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/keys = {
-"times": PoolRealArray( 0, 1 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Vector2( 0, 300 ), Vector2( 0, 0 ) ]
-}
 
 [sub_resource type="CanvasItemMaterial" id=72]
 blend_mode = 1
@@ -607,17 +583,17 @@ animations = [ {
 "speed": 30.0
 } ]
 
-[sub_resource type="DynamicFont" id=112]
+[sub_resource type="DynamicFont" id=111]
 size = 128
 outline_size = 4
 outline_color = Color( 0, 0, 0, 1 )
 use_filter = true
 font_data = ExtResource( 71 )
 
-[sub_resource type="Theme" id=113]
-default_font = SubResource( 112 )
+[sub_resource type="Theme" id=112]
+default_font = SubResource( 111 )
 
-[sub_resource type="TileSet" id=111]
+[sub_resource type="TileSet" id=113]
 0/name = "waterA.tres 0"
 0/texture = ExtResource( 56 )
 0/tex_offset = Vector2( 0, 0 )
@@ -1160,7 +1136,7 @@ position = Vector2( 1939.72, 189.645 )
 position = Vector2( 264.229, 70.0151 )
 
 [node name="Position2D" type="Position2D" parent="Floors/Portals/ToBakery"]
-position = Vector2( 2309.64, -75.7882 )
+position = Vector2( 2304.64, -74.7882 )
 
 [node name="ToArcadeFloor2" parent="Floors/Portals" instance=ExtResource( 8 )]
 position = Vector2( 1771, 301 )
@@ -1543,7 +1519,7 @@ direction = "right"
 position = Vector2( -632, 19 )
 
 [node name="BakeryExit" parent="Floors/Exits" instance=ExtResource( 8 )]
-position = Vector2( 2584, -16 )
+position = Vector2( 2586, -16 )
 direction = "down"
 
 [node name="Position2D" type="Position2D" parent="Floors/Exits/BakeryExit"]
@@ -2140,14 +2116,14 @@ visible = false
 material = SubResource( 4 )
 position = Vector2( 418.607, -749.533 )
 frames = SubResource( 70 )
-frame = 63
+frame = 54
 playing = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/nighttime = SubResource( 71 )
 
 [node name="NightTimer" type="Timer" parent="."]
-wait_time = 60.0
+wait_time = 51.0
 one_shot = true
 
 [node name="XrayTimer" type="Timer" parent="."]
@@ -2166,7 +2142,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 54 )
 expand = true
-stretch_mode = 3
+stretch_mode = 7
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -2189,7 +2165,7 @@ margin_left = 772.0
 margin_top = 491.0
 margin_right = 1148.0
 margin_bottom = 588.0
-theme = SubResource( 113 )
+theme = SubResource( 112 )
 text = "Get Ready!"
 align = 1
 valign = 1
@@ -2198,7 +2174,7 @@ __meta__ = {
 }
 
 [node name="AnimatedDetailTiles" type="TileMap" parent="."]
-tile_set = SubResource( 111 )
+tile_set = SubResource( 113 )
 cell_size = Vector2( 8, 8 )
 cell_quadrant_size = 8
 format = 1
@@ -2206,6 +2182,7 @@ tile_data = PoolIntArray( -13631462, 536870923, 0, -13631442, 536870923, 0, -136
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 70 )
+volume_db = -0.5
 autoplay = true
 
 [node name="ItemGetSound" type="AudioStreamPlayer" parent="."]
@@ -2216,11 +2193,14 @@ stream = ExtResource( 72 )
 
 [node name="NightMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 73 )
+volume_db = -0.5
 
 [node name="SeekerWins" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 74 )
+volume_db = -0.3
 
 [node name="HiderWins" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 75 )
+volume_db = -0.3
 [connection signal="timeout" from="NightTimer" to="." method="_on_NightTimer_timeout"]
 [connection signal="timeout" from="XrayTimer" to="." method="_on_XrayTimer_timeout"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Fonts/onett.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Fonts/year_is_199x.ttf" type="DynamicFontData" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://LobbyUI/EB_Panel.tres" type="StyleBox" id=4]
 [ext_resource path="res://Title.gd" type="Script" id=5]
 [ext_resource path="res://sound/wow.wav" type="AudioStream" id=6]
+[ext_resource path="res://Fonts/fourside.ttf" type="DynamicFontData" id=7]
 
 [sub_resource type="Shader" id=1]
 
@@ -29,21 +30,21 @@ font_data = ExtResource( 2 )
 [sub_resource type="Theme" id=6]
 default_font = SubResource( 5 )
 
-[sub_resource type="DynamicFont" id=10]
-size = 64
-font_data = ExtResource( 3 )
-
-[sub_resource type="Theme" id=11]
-default_font = SubResource( 10 )
-
 [sub_resource type="DynamicFont" id=7]
-size = 48
+size = 64
 font_data = ExtResource( 3 )
 
 [sub_resource type="Theme" id=8]
 default_font = SubResource( 7 )
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="DynamicFont" id=9]
+size = 48
+font_data = ExtResource( 3 )
+
+[sub_resource type="Theme" id=10]
+default_font = SubResource( 9 )
+
+[sub_resource type="Animation" id=11]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:rect_scale")
@@ -57,6 +58,13 @@ tracks/0/keys = {
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1e-05, 1e-05 ) ]
 }
+
+[sub_resource type="DynamicFont" id=12]
+size = 24
+font_data = ExtResource( 7 )
+
+[sub_resource type="Theme" id=13]
+default_font = SubResource( 12 )
 
 [node name="Title" type="Control"]
 anchor_right = 1.0
@@ -115,7 +123,7 @@ margin_right = 1020.0
 margin_bottom = 69.0
 rect_min_size = Vector2( 120, 57 )
 size_flags_horizontal = 4
-theme = SubResource( 11 )
+theme = SubResource( 8 )
 custom_styles/normal = ExtResource( 4 )
 text = "Start"
 
@@ -126,14 +134,36 @@ margin_right = 1048.0
 margin_bottom = 151.0
 rect_min_size = Vector2( 120, 57 )
 size_flags_horizontal = 4
-theme = SubResource( 8 )
+theme = SubResource( 10 )
 custom_styles/normal = ExtResource( 4 )
 text = "How to Play"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="CenterContainer/VBoxContainer"]
-anims/intro = SubResource( 9 )
+anims/intro = SubResource( 11 )
 
 [node name="WOW" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 6 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -41.0
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Version" type="Label" parent="MarginContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 1912.0
+margin_bottom = 33.0
+theme = SubResource( 13 )
+text = "VERSION"
+align = 2
 [connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/Start" to="." method="_on_Button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/Help" to="." method="_on_Help_pressed"]

@@ -17,10 +17,14 @@ const DEFAULT_PORT = 6073 #10567
 const MAX_PEERS = 12
 const DEFAULT_TEAMS = ["seeker"]
 
+const GAME_VERSION = "BETA2"
+
 var game_item_count
 var game_item_types
 var game_dropzone_count = 2
 sync var item_quest
+
+var is_game_over = false
 
 # these are always the details for YOU
 var player_name = "DEFAWLT"
@@ -44,7 +48,7 @@ signal game_error(what)
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_FOCUS_IN:
-		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), false)
+		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), Globals.sound_muted)
 	elif what == MainLoop.NOTIFICATION_WM_FOCUS_OUT:
 		AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), true)
 
@@ -84,9 +88,12 @@ remote func register_player(new_player_name, new_player_char):
 	players[id] = {"name" : new_player_name, "character" : new_player_char, "team" : "" }
 	emit_signal("player_list_changed")
 
-func unregister_player(id):
+remotesync func unregister_player(id):
+	print("Removing player " + str(id))
 	players.erase(id)
 	emit_signal("player_list_changed")
+	if id == 1:
+		end_game()
 
 remote func pre_start_game(spawn_points, item_spawn_points, drop_points, tc):
 	# could let the host choose a level... 
@@ -159,7 +166,6 @@ remote func pre_start_game(spawn_points, item_spawn_points, drop_points, tc):
 	var ui = load('res://UI.tscn').instance()
 	world.add_child(ui)
 	
-	
 	if not get_tree().is_network_server():
 		# Tell server we are ready to start.
 		rpc_id(1, "ready_to_start", get_tree().get_network_unique_id())
@@ -203,14 +209,11 @@ func join_game(ip, new_player_name, new_player_char):
 func get_player_list():
 	return players.values()
 
-
 func get_player_name():
 	return player_name
 
-
 func begin_game():
 	assert(get_tree().is_network_server()) # ONLY HOST
-	
 	
 	# create item quest for seekers
 	item_quest = Globals.create_item_quest(game_item_count,game_item_types)
@@ -271,6 +274,8 @@ func begin_game():
 	pre_start_game(spawn_points, item_spawn_points, dropzone_spawn_points, team_choices) # runs on this machine
 
 
+remotesync func player_left_lobby(id):
+	rpc("unregister_player", id)
 
 func end_game():
 	if has_node("/root/Level1"): # Game is in progress.
@@ -300,12 +305,13 @@ func _player_gained_item(item_type, player_id):
 
 
 func ui_quest_update():
-	check_game_over()
+	check_game_over() # check for a game over when updating a quest
+	
 	var q = get_tree().get_root().get_node("Level1/UI")
 	q.update_quest_text()
+	
 	var s = get_tree().get_root().get_node("Level1/ItemGetSound")
 	s.play()
-
 
 func get_all_players():
 	# used for network request
@@ -355,7 +361,8 @@ master func check_game_over():
 		
 remotesync func game_over(winning_team):
 	#get_tree().set_pause(true)
-	print("Triggering game over")
+	#print("Triggering game over")
+	is_game_over = true
 	for p in get_tree().get_root().get_node("Level1/YSort/Players").get_children():
 		p.can_move = false
 	#get_tree().get_root().get_node("Level1/UI").queue_free()

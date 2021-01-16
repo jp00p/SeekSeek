@@ -29,7 +29,6 @@ func _ready():
 	$MaskLayer/CenterContainer.queue_free()
 	get_node("UI/Chat").set_visible(true)
 	
-		
 func set_night():
 	# setup nighttime power 
 	rpc("nighttime")
@@ -43,6 +42,7 @@ func set_xray():
 	
 remotesync func xray_blast():
 	# show the xray animation to everyone
+	$MaskLayer/XrayBlast.frame = 0
 	$MaskLayer/XrayBlast.play()
 	$XRaySound.play()
 

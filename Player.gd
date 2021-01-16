@@ -43,12 +43,13 @@ var direction = "down"
 var player_name
 var close_calls = 0
 var steps = 0.0
+var footsteps = false
 
 var cam_scale_normal = Vector2(0.25, 0.25)
 var cam_scale_running = Vector2(0.2, 0.2)
 
 # info of players that aren't the network master
-puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "" }
+puppet var puppet_info = { "puppet_pos": Vector2(), "puppet_dir": "", "footsteps": footsteps }
 
 func _ready():
 
@@ -87,16 +88,22 @@ func _physics_process(delta):
 			$Camera2D.zoom = $Camera2D.zoom.linear_interpolate(cam_scale_normal, t)
 		if velocity != Vector2.ZERO:
 			steps += 1.0
+			footsteps = true
+		else:
+			footsteps = false
 		velocity = move_and_slide(velocity)
+			
 		$RayCast2D.cast_to = throw_dir
 
 		# set your info for other people to see! 
-		rset_unreliable("puppet_info", { "puppet_pos": position, "puppet_dir": direction })
+		rset_unreliable("puppet_info", { "puppet_pos": position, "puppet_dir": direction, "footsteps": footsteps })
 		
 	else:
 		# handle the fakes!
 		position = puppet_info.puppet_pos # x,y
 		_set_direction(puppet_info.puppet_dir) # which way are you facing
+		if not $Footsteps.is_playing() and puppet_info.footsteps:
+			$Footsteps.play()
 
 
 

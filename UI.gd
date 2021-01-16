@@ -5,9 +5,13 @@ var chat_visible = false
 
 func _ready():
 	$Chat.set_visible(false)
+	
+	
 	var player = get_tree().get_root().get_node("Level1/YSort/Players/"+str(get_tree().get_network_unique_id()))
 	chat_display.text = ""
 	$Chat.modulate.a = 0.75
+	if not player:
+		return
 	if player.team == "seeker":
 		$QPanel.set_visible(false)
 		var _hotkey_count = 1
@@ -36,7 +40,6 @@ func set_cooldown(skill):
 
 func update_quest_text():
 	# update quest UI
-	
 	# remove text first
 	for n in $QPanel/QMargin/Quests.get_children():
 		$QPanel/QMargin/Quests.remove_child(n)
@@ -69,13 +72,15 @@ func _on_ChatInput_focus_entered():
 	$Chat.modulate.a = 1
 	var id = get_tree().get_network_unique_id()
 	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(id))
-	p.can_move = false
+	if not gamestate.game_is_over:
+		p.can_move = false
 
 func _on_ChatInput_focus_exited():
 	$Chat.modulate.a = 0.75
 	var id = get_tree().get_network_unique_id()
 	var p = get_tree().get_root().get_node("Level1/YSort/Players/"+str(id))
-	p.can_move = true
+	if not gamestate.game_is_over:
+		p.can_move = true
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
@@ -91,6 +96,6 @@ func _input(event):
 			#$Chat/AnimationPlayer.play("show_chat")
 			chat_visible = true
 
-
 func _on_ChatInput_text_changed(new_text):
 	$TextSound.play()
+

@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://Characters/venus.tres" type="SpriteFrames" id=2]
 [ext_resource path="res://sprites/light_01.png" type="Texture" id=3]
 [ext_resource path="res://Fonts/statusplz.ttf" type="DynamicFontData" id=4]
 [ext_resource path="res://sound/possess.wav" type="AudioStream" id=5]
+[ext_resource path="res://sound/sfx_movement_footstepsloop4_fast.wav" type="AudioStream" id=6]
 
 [sub_resource type="CanvasItemMaterial" id=1]
 render_priority = 1
@@ -60,7 +61,7 @@ z_as_relative = false
 amount = 160
 lifetime = 15.0
 explosiveness = 0.01
-visibility_rect = Rect2( -5000, -5000, 10000, 10000 )
+visibility_rect = Rect2( -99999, -99999, 999999, 999999 )
 local_coords = false
 draw_order = 1
 process_material = SubResource( 4 )
@@ -148,6 +149,11 @@ one_shot = true
 
 [node name="PlayerDeathSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 5 )
+
+[node name="Footsteps" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+max_distance = 256.0
+attenuation = 0.420447
 [connection signal="timeout" from="StaminaCooldown" to="." method="_on_StaminaCooldown_timeout"]
 [connection signal="body_entered" from="KillRadius" to="." method="_on_KillRadius_body_entered"]
 [connection signal="body_entered" from="ZombieRadius" to="." method="_on_ZombieRadius_body_entered"]

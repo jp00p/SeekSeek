@@ -3,6 +3,9 @@ extends Control
 signal title_start
 signal show_help
 
+func _ready():
+	$MarginContainer/Version.text = "Version: " + str(gamestate.GAME_VERSION)
+
 func _on_Button_pressed():
 	$WOW.play()
 	$CenterContainer/VBoxContainer/AnimationPlayer.play("intro")

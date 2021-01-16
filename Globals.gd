@@ -1,5 +1,7 @@
 extends Node
 
+var sound_muted = false
+
 var character_graphics = {
 	"pokey" : preload("res://Characters/pokey.tres"),
 	"pizzagirl" : preload("res://Characters/pizzagirl.tres"),
